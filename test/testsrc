@@ -1,0 +1,32 @@
+CODICI DA VERIFICARE:
+=====
+ int x = 4 ; delete x ; int x = 5 ;   // questo codice e` corretto!
+=====
+f(var int x, var int y){ delete x; delete y; } 
+    //  cosa accade in {int x = 3 ; f(x,x) ;} 
+=====
+f(var int x, int y){if (y== 0) delete x; else x=x+y ; } 
+=====
+h(var int x, var int y){ if (y==0) delete x ; else { x = x-1; h(x,y) ;}
+=====
+g(var int x, var int y){ if (y==0) delete x ; else { x = x-1; g(x,y) ; delete x ;}
+=====
+int x = 1;
+f(int y){ if (y == 0) then { print(x);} else { f(y-1) ; }
+f(54) ;
+=====
+int u = 1 ;
+f(var int x, int n){ 
+	if (n == 0) then { print(x) ;}
+	else { int y = x*n ; f(y,n-1) ; }
+	delete x ;
+}
+f(u,6) ;
+=====
+f(int m, int n){
+	if (m>n) { print(m+n) ;}
+	else { int x = 1 ; f(m+1,n+1) ; }
+}
+f(5,4) ;
+// cosa succede se la invoco con f(4,5)?
+=====
