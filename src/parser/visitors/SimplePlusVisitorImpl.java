@@ -1,11 +1,17 @@
 package parser.visitors;
 
+import java.util.*;
+
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import ast.SimplePlusArg;
+import ast.SimplePlusBlock;
+import ast.SimplePlusDecFun;
 import ast.SimplePlusElementBase;
+import ast.SimplePlusStmt;
 import parser.SimplePlusBaseVisitor;
 import parser.SimplePlusParser.ArgContext;
 import parser.SimplePlusParser.AssignmentContext;
@@ -34,26 +40,50 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SimplePlusEleme
 
 	@Override
 	public SimplePlusElementBase visitBlock(BlockContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitBlock(ctx);
+		List<SimplePlusStmt> children = new LinkedList<SimplePlusStmt>();
+		
+		for(StatementContext stmctx : ctx.statement())
+			children.add((SimplePlusStmt) visitStatement(stmctx));
+		return new SimplePlusBlock(children);
 	}
 
 	@Override
 	public SimplePlusElementBase visitStatement(StatementContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitStatement(ctx);
+		return visit(ctx.getChild(0));
 	}
 
 	@Override
 	public SimplePlusElementBase visitDeclaration(DeclarationContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitDeclaration(ctx);
+		return visit(ctx.getChild(0));
 	}
 
 	@Override
 	public SimplePlusElementBase visitDecFun(DecFunContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitDecFun(ctx);
+		String type = ctx.type().getText();
+		String name = ctx.ID().getText();
+		List<SimplePlusArg> args = new LinkedList<SimplePlusArg>();
+		//IF DECFUN HAS AT LEAST ONE ARG
+		boolean nextArg = ctx.getChildCount()>5;
+		//INDEX OF FIRST ARG
+		int child=3;
+		//ARG INDEX
+		int ARGN = 0;
+		
+		while(nextArg){
+			//IF NEXT TOKEN IS COMMA, THEN THERE IS AT LEAST ANOTHER ARG
+			if(ctx.getChild(child+1).getText().equals(")"))
+				nextArg = false;
+			//CREATE ARG SUBTREE AND ADD IT TO THE ARGS LIST
+			args.add((SimplePlusArg) visitArg(ctx.arg(ARGN)));
+			
+			//JUMP NEXT TOKEN, AKA COMMA
+			child+=2;
+			ARGN++;
+		}
+		
+		SimplePlusBlock body = (SimplePlusBlock) visitBlock(ctx.block());
+		
+		return new SimplePlusDecFun(type,name,args,body);
 	}
 
 	@Override

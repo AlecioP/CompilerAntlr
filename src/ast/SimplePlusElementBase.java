@@ -2,7 +2,7 @@ package ast;
 
 import java.util.List;
 
-import behaviour.BTBase;
+//import behaviour.BTBase;
 import util.Environment;
 import util.SemanticError;
 
@@ -18,5 +18,5 @@ public abstract class SimplePlusElementBase {
 	 * @param e is the current environment where the information about existent variables is stored
 	 * @return the behavior of the expression
 	 */
-	public abstract BTBase inferBehavior(Environment e);
+	//public abstract BTBase inferBehavior(Environment e);
 }
