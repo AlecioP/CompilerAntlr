@@ -10,8 +10,12 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import ast.SimplePlusArg;
 import ast.SimplePlusBlock;
 import ast.SimplePlusDecFun;
+import ast.SimplePlusDecVar;
 import ast.SimplePlusElementBase;
+import ast.SimplePlusExp;
 import ast.SimplePlusStmt;
+import ast.SimplePlusType;
+import ast.SimplePlusType.spType;
 import parser.SimplePlusBaseVisitor;
 import parser.SimplePlusParser.ArgContext;
 import parser.SimplePlusParser.AssignmentContext;
@@ -88,14 +92,31 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SimplePlusEleme
 
 	@Override
 	public SimplePlusElementBase visitDecVar(DecVarContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitDecVar(ctx);
+		String type=ctx.type().getText();
+		String name=ctx.ID().getText();
+		SimplePlusExp value = (SimplePlusExp)visit(ctx.exp());
+		
+		return new SimplePlusDecVar(type, name, value);
 	}
 
 	@Override
 	public SimplePlusElementBase visitType(TypeContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitType(ctx);
+		SimplePlusType type=null;
+		switch(ctx.getText()) {
+		case"int":{
+			type = new SimplePlusType(spType.INT);
+			break;
+		}
+		case"bool":{
+			type = new SimplePlusType(spType.BOOL);
+			break;
+		}
+		case"void":{
+			type = new SimplePlusType(spType.VOID);
+			break;
+		}
+		}
+		return type;
 	}
 
 	@Override
