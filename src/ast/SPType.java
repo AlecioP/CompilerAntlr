@@ -5,13 +5,13 @@ import java.util.List;
 import util.Environment;
 import util.SemanticError;
 
-public class SimplePlusType extends SimplePlusElementBase {
+public class SPType extends SPElementBase {
 	public enum spType {
 		INT,BOOL,VOID;
 	}
 	spType value;
 	
-	public SimplePlusType(spType value) {
+	public SPType(spType value) {
 		this.value = value;
 	}
 

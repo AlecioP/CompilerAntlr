@@ -2,20 +2,32 @@ package parser.visitors;
 
 import java.util.*;
 
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
-import ast.SimplePlusArg;
-import ast.SimplePlusBlock;
-import ast.SimplePlusDecFun;
-import ast.SimplePlusDecVar;
-import ast.SimplePlusElementBase;
-import ast.SimplePlusExp;
-import ast.SimplePlusStmt;
-import ast.SimplePlusType;
-import ast.SimplePlusType.spType;
+import ast.SPArg;
+import ast.SPAssignment;
+import ast.SPBinExp;
+import ast.SPBinOperation;
+import ast.SPBlock;
+import ast.SPBoolExp;
+import ast.SPBoolean;
+import ast.SPCall;
+import ast.SPCallExp;
+import ast.SPDecFun;
+import ast.SPDecVar;
+import ast.SPDelete;
+import ast.SPElementBase;
+import ast.SPExp;
+import ast.SPIfelse;
+import ast.SPNumExp;
+import ast.SPNumber;
+import ast.SPPrint;
+import ast.SPReturn;
+import ast.SPStmt;
+import ast.SPType;
+import ast.SPType.spType;
+import ast.SPUnaryExp;
+import ast.SPUnaryOperation;
+import ast.SPVar;
+import ast.SPVarExp;
 import parser.SimplePlusBaseVisitor;
 import parser.SimplePlusParser.ArgContext;
 import parser.SimplePlusParser.AssignmentContext;
@@ -29,6 +41,7 @@ import parser.SimplePlusParser.DecFunContext;
 import parser.SimplePlusParser.DecVarContext;
 import parser.SimplePlusParser.DeclarationContext;
 import parser.SimplePlusParser.DeletionContext;
+import parser.SimplePlusParser.ExpContext;
 import parser.SimplePlusParser.IteContext;
 import parser.SimplePlusParser.NegExpContext;
 import parser.SimplePlusParser.NotExpContext;
@@ -40,32 +53,32 @@ import parser.SimplePlusParser.TypeContext;
 import parser.SimplePlusParser.ValExpContext;
 import parser.SimplePlusParser.VarExpContext;
 
-public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SimplePlusElementBase> {
+public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SPElementBase> {
 
 	@Override
-	public SimplePlusElementBase visitBlock(BlockContext ctx) {
-		List<SimplePlusStmt> children = new LinkedList<SimplePlusStmt>();
+	public SPElementBase visitBlock(BlockContext ctx) {
+		List<SPStmt> children = new LinkedList<SPStmt>();
 		
 		for(StatementContext stmctx : ctx.statement())
-			children.add((SimplePlusStmt) visitStatement(stmctx));
-		return new SimplePlusBlock(children);
+			children.add((SPStmt) visitStatement(stmctx));
+		return new SPBlock(children);
 	}
 
 	@Override
-	public SimplePlusElementBase visitStatement(StatementContext ctx) {
+	public SPElementBase visitStatement(StatementContext ctx) {
 		return visit(ctx.getChild(0));
 	}
 
 	@Override
-	public SimplePlusElementBase visitDeclaration(DeclarationContext ctx) {
+	public SPElementBase visitDeclaration(DeclarationContext ctx) {
 		return visit(ctx.getChild(0));
 	}
 
 	@Override
-	public SimplePlusElementBase visitDecFun(DecFunContext ctx) {
+	public SPElementBase visitDecFun(DecFunContext ctx) {
 		String type = ctx.type().getText();
 		String name = ctx.ID().getText();
-		List<SimplePlusArg> args = new LinkedList<SimplePlusArg>();
+		List<SPArg> args = new LinkedList<SPArg>();
 		//IF DECFUN HAS AT LEAST ONE ARG
 		boolean nextArg = ctx.getChildCount()>5;
 		//INDEX OF FIRST ARG
@@ -78,41 +91,41 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SimplePlusEleme
 			if(ctx.getChild(child+1).getText().equals(")"))
 				nextArg = false;
 			//CREATE ARG SUBTREE AND ADD IT TO THE ARGS LIST
-			args.add((SimplePlusArg) visitArg(ctx.arg(ARGN)));
+			args.add((SPArg) visitArg(ctx.arg(ARGN)));
 			
 			//JUMP NEXT TOKEN, AKA COMMA
 			child+=2;
 			ARGN++;
 		}
 		
-		SimplePlusBlock body = (SimplePlusBlock) visitBlock(ctx.block());
+		SPBlock body = (SPBlock) visitBlock(ctx.block());
 		
-		return new SimplePlusDecFun(type,name,args,body);
+		return new SPDecFun(type,name,args,body);
 	}
 
 	@Override
-	public SimplePlusElementBase visitDecVar(DecVarContext ctx) {
+	public SPElementBase visitDecVar(DecVarContext ctx) {
 		String type=ctx.type().getText();
 		String name=ctx.ID().getText();
-		SimplePlusExp value = (SimplePlusExp)visit(ctx.exp());
+		SPExp value = (SPExp)visit(ctx.exp());
 		
-		return new SimplePlusDecVar(type, name, value);
+		return new SPDecVar(type, name, value);
 	}
 
 	@Override
-	public SimplePlusElementBase visitType(TypeContext ctx) {
-		SimplePlusType type=null;
+	public SPElementBase visitType(TypeContext ctx) {
+		SPType type=null;
 		switch(ctx.getText()) {
 		case"int":{
-			type = new SimplePlusType(spType.INT);
+			type = new SPType(spType.INT);
 			break;
 		}
 		case"bool":{
-			type = new SimplePlusType(spType.BOOL);
+			type = new SPType(spType.BOOL);
 			break;
 		}
 		case"void":{
-			type = new SimplePlusType(spType.VOID);
+			type = new SPType(spType.VOID);
 			break;
 		}
 		}
@@ -120,123 +133,129 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SimplePlusEleme
 	}
 
 	@Override
-	public SimplePlusElementBase visitArg(ArgContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitArg(ctx);
+	public SPElementBase visitArg(ArgContext ctx) {
+		String name=ctx.ID().getText();
+		SPType type = (SPType) visitType(ctx.type());
+		boolean isref = ctx.getChildCount() == 3;
+		return new SPArg(name, type, isref);
 	}
 
 	@Override
-	public SimplePlusElementBase visitRef(RefContext ctx) {
+	public SPElementBase visitRef(RefContext ctx) {
 		// TODO Auto-generated method stub
 		return super.visitRef(ctx);
+		//Never used therefore not implemented
 	}
 
 	@Override
-	public SimplePlusElementBase visitAssignment(AssignmentContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitAssignment(ctx);
+	public SPElementBase visitAssignment(AssignmentContext ctx) {
+		String name = ctx.ID().getText();
+		SPExp value = (SPExp)visit(ctx.exp());
+		return new SPAssignment(name, value);
 	}
 
 	@Override
-	public SimplePlusElementBase visitDeletion(DeletionContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitDeletion(ctx);
+	public SPElementBase visitDeletion(DeletionContext ctx) {
+		String name = ctx.ID().getText();
+		return new SPDelete(name);
 	}
 
 	@Override
-	public SimplePlusElementBase visitPrint(PrintContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitPrint(ctx);
+	public SPElementBase visitPrint(PrintContext ctx) {
+		SPExp value = (SPExp)visit(ctx.exp());
+		return new SPPrint(value);
 	}
 
 	@Override
-	public SimplePlusElementBase visitRet(RetContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitRet(ctx);
+	public SPElementBase visitRet(RetContext ctx) {
+		SPExp value = (SPExp)visit(ctx.exp());
+		return new SPReturn(value);
 	}
 
 	@Override
-	public SimplePlusElementBase visitIte(IteContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitIte(ctx);
+	public SPElementBase visitIte(IteContext ctx) {
+		
+		SPExp guard = (SPExp) visit(ctx.exp());
+		
+		SPStmt then_ = (SPStmt) visit(ctx.statement(0));
+		
+		SPStmt else_ = null;
+		
+		if(ctx.getChildCount()>5)
+			else_ = (SPStmt) visit(ctx.statement(1));
+		
+		return new SPIfelse(guard,then_,else_);
+		
 	}
 
 	@Override
-	public SimplePlusElementBase visitCall(CallContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitCall(ctx);
+	public SPElementBase visitCall(CallContext ctx) {
+		
+		String name = ctx.ID().getText();
+		
+		List<SPExp> args = new LinkedList<SPExp>();
+		
+		for(ExpContext expc : ctx.exp()) {
+			args.add((SPExp) visit(expc));
+		}
+		
+		return new SPCall(name, args);
 	}
 
 	@Override
-	public SimplePlusElementBase visitBaseExp(BaseExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitBaseExp(ctx);
+	public SPElementBase visitBaseExp(BaseExpContext ctx) {
+		
+		return visit(ctx.exp());
 	}
 
 	@Override
-	public SimplePlusElementBase visitVarExp(VarExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitVarExp(ctx);
+	public SPElementBase visitVarExp(VarExpContext ctx) {
+		return new SPVarExp(new SPVar(ctx.ID().getText()));
 	}
 
 	@Override
-	public SimplePlusElementBase visitBinExp(BinExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitBinExp(ctx);
+	public SPElementBase visitBinExp(BinExpContext ctx) {
+		SPExp right = (SPExp) visit(ctx.right);
+		SPExp left = (SPExp) visit(ctx.left);
+		String op = ctx.op.getText();
+		SPBinOperation operation = new SPBinOperation(right, left, op);
+		return new SPBinExp(operation);
 	}
 
 	@Override
-	public SimplePlusElementBase visitValExp(ValExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitValExp(ctx);
+	public SPElementBase visitValExp(ValExpContext ctx) {
+		Integer value = Integer.valueOf(ctx.NUMBER().getText());
+		return new SPNumExp(new SPNumber(value));
 	}
 
 	@Override
-	public SimplePlusElementBase visitNegExp(NegExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitNegExp(ctx);
+	public SPElementBase visitNegExp(NegExpContext ctx) {
+		
+		String operator = ctx.getChild(0).getText();
+		SPExp value = (SPExp) visit(ctx.exp());
+		
+		
+		return new SPUnaryExp(new SPUnaryOperation(operator,value));
 	}
 
 	@Override
-	public SimplePlusElementBase visitBoolExp(BoolExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitBoolExp(ctx);
+	public SPElementBase visitBoolExp(BoolExpContext ctx) {
+		Boolean value = Boolean.valueOf(ctx.BOOL().getText());
+		return new SPBoolExp(new SPBoolean(value));
 	}
 
 	@Override
-	public SimplePlusElementBase visitCallExp(CallExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitCallExp(ctx);
+	public SPElementBase visitCallExp(CallExpContext ctx) {
+		return new SPCallExp((SPCall)visitCall(ctx.call()));
 	}
 
 	@Override
-	public SimplePlusElementBase visitNotExp(NotExpContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitNotExp(ctx);
-	}
-
-	@Override
-	public SimplePlusElementBase visit(ParseTree tree) {
-		// TODO Auto-generated method stub
-		return super.visit(tree);
-	}
-
-	@Override
-	public SimplePlusElementBase visitChildren(RuleNode arg0) {
-		// TODO Auto-generated method stub
-		return super.visitChildren(arg0);
-	}
-
-	@Override
-	public SimplePlusElementBase visitErrorNode(ErrorNode node) {
-		// TODO Auto-generated method stub
-		return super.visitErrorNode(node);
-	}
-
-	@Override
-	public SimplePlusElementBase visitTerminal(TerminalNode node) {
-		// TODO Auto-generated method stub
-		return super.visitTerminal(node);
+	public SPElementBase visitNotExp(NotExpContext ctx) {
+		String operator = ctx.getChild(0).getText();
+		SPExp value = (SPExp) visit(ctx.exp());
+		
+		
+		return new SPUnaryExp(new SPUnaryOperation(operator,value));
 	}
 	
 }

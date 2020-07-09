@@ -8,8 +8,8 @@ import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
-import ast.SimplePlusBlock;
-import ast.SimplePlusElementBase;
+import ast.SPBlock;
+import ast.SPElementBase;
 import parser.SimplePlusBaseVisitor;
 import parser.SimplePlusLexer;
 import parser.SimplePlusParser;
@@ -44,9 +44,9 @@ public class Compiler {
 			//visit the root, this will recursively visit the whole tree
 			BlockContext ctx = ((SimplePlusParser)parser).block();
 			
-			SimplePlusBaseVisitor<SimplePlusElementBase> v = (SimplePlusBaseVisitor<SimplePlusElementBase>) visitor;
+			SimplePlusBaseVisitor<SPElementBase> v = (SimplePlusBaseVisitor<SPElementBase>) visitor;
 			
-			SimplePlusBlock mainBlock = (SimplePlusBlock) v.visitBlock(ctx);
+			SPBlock mainBlock = (SPBlock) v.visitBlock(ctx);
 			
 		} catch(IOException e) {
 			e.printStackTrace();

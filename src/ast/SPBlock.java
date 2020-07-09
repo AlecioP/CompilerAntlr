@@ -5,13 +5,13 @@ import java.util.List;
 import util.Environment;
 import util.SemanticError;
 
-public class SimplePlusBlock extends SimplePlusStmt {
+public class SPBlock extends SPStmt {
 	
-	List<SimplePlusStmt> children;
+	List<SPStmt> children;
 	
 	
 
-	public SimplePlusBlock(List<SimplePlusStmt> children) {
+	public SPBlock(List<SPStmt> children) {
 		this.children = children;
 	}
 

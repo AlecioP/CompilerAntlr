@@ -5,17 +5,20 @@ import java.util.List;
 import util.Environment;
 import util.SemanticError;
 
-public class SimplePlusDecVar extends SimplePlusStmt {
-	String type;
+public class SPDecFun extends SPStmt {
+	
+	String retType;
 	String name;
-	SimplePlusExp value;
+	List<SPArg> args;
+	SPBlock body;
 	
-	public SimplePlusDecVar(String type, String name, SimplePlusExp value) {
-		this.type = type;
-		this.name = name;
-		this.value = value;
+	public SPDecFun(String r,String n, List<SPArg> a,SPBlock b){
+		retType = r;
+		name = n;
+		args = a;
+		body = b;
 	}
-	
+
 	@Override
 	public List<SemanticError> checkSemantics(Environment e) {
 		// TODO Auto-generated method stub
