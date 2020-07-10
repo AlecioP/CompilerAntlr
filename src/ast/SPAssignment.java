@@ -1,9 +1,8 @@
 package ast;
 
-import java.util.List;
 
 import util.Environment;
-import util.SemanticError;
+
 
 public class SPAssignment extends SPStmt {
 	
@@ -18,9 +17,15 @@ public class SPAssignment extends SPStmt {
 
 
 	@Override
-	public List<SemanticError> checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
-		return null;
+	public void checkSemantics(Environment e) {
+		if(!e.containsVariable(name)) {
+			throw new RuntimeException("Variable "+name+" is not declared in this scope");
+		}
+		String ro= value.getType();
+		if(!ro.equals(e.getEntry(name).getType())){
+			throw new RuntimeException("Type mismatch between left and right operands");
+		}
+		
 	}
 
 }

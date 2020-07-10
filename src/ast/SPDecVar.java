@@ -1,9 +1,6 @@
 package ast;
 
-import java.util.List;
-
 import util.Environment;
-import util.SemanticError;
 
 public class SPDecVar extends SPStmt {
 	String type;
@@ -17,9 +14,18 @@ public class SPDecVar extends SPStmt {
 	}
 	
 	@Override
-	public List<SemanticError> checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
-		return null;
+	public void checkSemantics(Environment e) {
+		
+		if (e.containsTop(name)) {
+			throw new RuntimeException("Variable "+name+" already declared in this scope");
+		}
+		String ro= value.getType();
+		if(!ro.equals(type)){
+			throw new RuntimeException("Type mismatch between left and right operands");
+		}
+		e.addVariable(name, type);
+		
+		
 	}
 
 }

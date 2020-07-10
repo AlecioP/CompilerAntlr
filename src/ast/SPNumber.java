@@ -1,9 +1,9 @@
 package ast;
 
-import java.util.List;
+
 
 import util.Environment;
-import util.SemanticError;
+
 
 public class SPNumber extends SPElementBase {
 	
@@ -14,9 +14,8 @@ public class SPNumber extends SPElementBase {
 	}
 
 	@Override
-	public List<SemanticError> checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
-		return null;
+	public void checkSemantics(Environment e) {
+	
 	}
 
 }

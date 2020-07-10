@@ -3,7 +3,6 @@ package ast;
 import java.util.List;
 
 import util.Environment;
-import util.SemanticError;
 
 public class SPCall extends SPStmt {
 	
@@ -16,9 +15,9 @@ public class SPCall extends SPStmt {
 	}
 
 	@Override
-	public List<SemanticError> checkSemantics(Environment e) {
+	public void checkSemantics(Environment e) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 }

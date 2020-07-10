@@ -3,7 +3,7 @@ package ast;
 import java.util.List;
 
 import util.Environment;
-import util.SemanticError;
+
 
 public class SPBlock extends SPStmt {
 	
@@ -16,9 +16,13 @@ public class SPBlock extends SPStmt {
 	}
 
 	@Override
-	public List<SemanticError> checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
-		return null;
+	public void checkSemantics(Environment e) {
+		e.openScope();
+		for(SPStmt el : children){
+			el.checkSemantics(e);
+		}
+		e.closeScope();
+		
 	}
 
 }

@@ -1,9 +1,7 @@
 package ast;
 
-import java.util.List;
-
 import util.Environment;
-import util.SemanticError;
+
 
 public class SPVarExp extends SPExp {
 
@@ -12,7 +10,12 @@ public class SPVarExp extends SPExp {
 	}
 
 	@Override
-	public List<SemanticError> checkSemantics(Environment e) {
+	public void checkSemantics(Environment e) {
+		
+	}
+
+	@Override
+	public String getType() {
 		// TODO Auto-generated method stub
 		return null;
 	}
