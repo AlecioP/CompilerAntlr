@@ -2,7 +2,9 @@ package ast;
 
 import java.util.List;
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 
 public class SPBlock extends SPStmt {
@@ -16,12 +18,24 @@ public class SPBlock extends SPStmt {
 	}
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		e.openScope();
 		for(SPStmt el : children){
 			el.checkSemantics(e);
 		}
 		e.closeScope();
+		
+	}
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
 		
 	}
 

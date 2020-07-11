@@ -2,7 +2,9 @@ package ast;
 
 import java.util.List;
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 
 public class SPDecFun extends SPStmt {
@@ -20,7 +22,19 @@ public class SPDecFun extends SPStmt {
 	}
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
 		// TODO Auto-generated method stub
 		
 	}

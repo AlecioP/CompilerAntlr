@@ -1,6 +1,8 @@
 package ast;
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 
 public class SPUnaryExp extends SPExp {
@@ -15,7 +17,7 @@ public class SPUnaryExp extends SPExp {
 	}
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		switch(operator) {
 		case"-":{
 			if(value.getType(e).equals("int")==false)
@@ -32,7 +34,7 @@ public class SPUnaryExp extends SPExp {
 	}
 
 	@Override
-	public String getType(Environment e) {
+	public String getType(EnvironmentTypes e) {
 		switch(operator) {
 		case"-":
 			return "int";
@@ -40,6 +42,18 @@ public class SPUnaryExp extends SPExp {
 			return "bool";
 		}
 		return null;
+	}
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

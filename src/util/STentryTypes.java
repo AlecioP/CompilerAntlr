@@ -1,18 +1,18 @@
 package util;
 
 
-public class STentry {
+public class STentryTypes {
  
   private int nl;
   private String type;
   private int offset;
   
-  public STentry (int n, int os){
+  public STentryTypes (int n, int os){
 	  	nl = n ;
 	  	offset = os ;
 	  	} 
    
-  public STentry (int n, String t, int os){
+  public STentryTypes (int n, String t, int os){
 	  nl = n ;
 	  type = t ;
 	  offset = os ;

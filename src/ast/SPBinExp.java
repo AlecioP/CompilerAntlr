@@ -1,6 +1,8 @@
 package ast;
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 
 public class SPBinExp extends SPExp {
@@ -16,7 +18,7 @@ public class SPBinExp extends SPExp {
 	}
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		switch (operator) {
 		case "+":
 		case "-":
@@ -49,7 +51,7 @@ public class SPBinExp extends SPExp {
 	}
 
 	@Override
-	public String getType(Environment e) {
+	public String getType(EnvironmentTypes e) {
 		
 		switch (operator) {
 		case "+":
@@ -68,6 +70,18 @@ public class SPBinExp extends SPExp {
 			return "bool";
 		}
 		return null;
+	}
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

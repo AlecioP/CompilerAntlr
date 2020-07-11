@@ -1,6 +1,8 @@
 package ast;
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 public class SPDecVar extends SPStmt {
 	String type;
@@ -14,7 +16,7 @@ public class SPDecVar extends SPStmt {
 	}
 	
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		
 		if (e.containsTop(name)) {
 			throw new RuntimeException("Variable "+name+" already declared in this scope");
@@ -28,6 +30,18 @@ public class SPDecVar extends SPStmt {
 		}
 		e.addVariable(name, type);
 		
+		
+	}
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
 		
 	}
 

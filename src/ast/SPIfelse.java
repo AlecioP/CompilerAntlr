@@ -1,6 +1,8 @@
 package ast;
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 
 public class SPIfelse extends SPStmt {
@@ -18,7 +20,7 @@ public class SPIfelse extends SPStmt {
 
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		guard.checkSemantics(e);
 		String t1 = guard.getType(e);
 		if(t1 != "bool")
@@ -28,6 +30,20 @@ public class SPIfelse extends SPStmt {
 		
 		if(else_ != null)
 			else_.checkSemantics(e);
+	}
+
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

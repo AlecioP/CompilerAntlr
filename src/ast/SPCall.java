@@ -2,7 +2,9 @@ package ast;
 
 import java.util.List;
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 public class SPCall extends SPStmt {
 	
@@ -15,7 +17,7 @@ public class SPCall extends SPStmt {
 	}
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		
 		
 		// "T1,T2..Tn->T"
@@ -35,6 +37,18 @@ public class SPCall extends SPStmt {
 			it++;
 		}
 		
+		
+	}
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
 		
 	}
 

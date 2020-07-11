@@ -3,6 +3,6 @@ import util.*;
 
 public abstract class SPExp extends SPElementBase {
 	
-	public abstract String getType(Environment e);
+	public abstract String getType(EnvironmentTypes e);
 
 }

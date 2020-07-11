@@ -2,7 +2,9 @@ package ast;
 
 
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 
 public class SPReturn extends SPStmt {
@@ -14,11 +16,23 @@ public class SPReturn extends SPStmt {
 	}
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		value.checkSemantics(e);
 		String type = value.getType(e);
 		if(type != e.getCurrentReturnType())
 			throw new RuntimeException("Type mismatch of return expression");
+		
+	}
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
 		
 	}
 

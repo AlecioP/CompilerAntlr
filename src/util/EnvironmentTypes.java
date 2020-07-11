@@ -3,18 +3,18 @@ package util;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Environment {
+public class EnvironmentTypes {
 
 	//contains the stack of scopes. the last one is always the current active scope
 	//this linked list is used as a stack with LIFO behavior
-	LinkedList<HashMap<String, STentry>> scopes = new LinkedList<HashMap<String,STentry>>();
+	LinkedList<HashMap<String, STentryTypes>> scopes = new LinkedList<HashMap<String,STentryTypes>>();
 	
 	final String MAIN_RETURN_TYPE = "int";
 	
 	LinkedList<String> return_type_stack;
 	
 	
-	public Environment() {
+	public EnvironmentTypes() {
 		return_type_stack = new LinkedList<String>();
 		return_type_stack.add(MAIN_RETURN_TYPE);
 	}
@@ -22,7 +22,7 @@ public class Environment {
 	int nestingLevel =-1;
 	int offset =0;
 	public void addVariable(String id,String t) {
-		STentry entry= new STentry(nestingLevel,t,offset);
+		STentryTypes entry= new STentryTypes(nestingLevel,t,offset);
 		scopes.peek().put(id,entry);
 		offset++;
 	}
@@ -31,7 +31,7 @@ public class Environment {
 	public void openScope(){
 		nestingLevel++;
 		offset=0;
-		scopes.push(new HashMap<String, STentry>());
+		scopes.push(new HashMap<String, STentryTypes>());
 
 	}
 
@@ -45,7 +45,7 @@ public class Environment {
 
 	public boolean containsVariable(String id){
 
-		for(HashMap<String, STentry> scope:scopes){
+		for(HashMap<String, STentryTypes> scope:scopes){
 			if(scope.containsKey(id))
 				return true;
 		}
@@ -56,8 +56,8 @@ public class Environment {
 		return scopes.peek().containsKey(id);
 	}
 	
-	public STentry getEntry(String id) {
-		for(HashMap<String, STentry> scope:scopes){
+	public STentryTypes getEntry(String id) {
+		for(HashMap<String, STentryTypes> scope:scopes){
 			if(scope.containsKey(id)) {
 				return scope.get(id);
 			}

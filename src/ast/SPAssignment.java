@@ -1,7 +1,9 @@
 package ast;
 
 
-import util.Environment;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentTypes;
 
 
 public class SPAssignment extends SPStmt {
@@ -17,7 +19,7 @@ public class SPAssignment extends SPStmt {
 
 
 	@Override
-	public void checkSemantics(Environment e) {
+	public void checkSemantics(EnvironmentTypes e) {
 		if(!e.containsVariable(name)) {
 			throw new RuntimeException("Variable "+name+" is not declared in this scope");
 		}
@@ -28,6 +30,22 @@ public class SPAssignment extends SPStmt {
 		if(!ro.equals(e.getEntry(name).getType())){
 			throw new RuntimeException("Type mismatch between left and right operands");
 		}
+		
+	}
+
+
+
+	@Override
+	public void checkEffects(EnvironmentEffects e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void codeGen(EnvironmentCodeGen e) {
+		// TODO Auto-generated method stub
 		
 	}
 
