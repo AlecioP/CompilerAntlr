@@ -4,21 +4,23 @@ import util.Environment;
 
 
 public class SPCallExp extends SPExp {
+	
+	SPCall value;
 
 	public SPCallExp(SPCall value) {
-		super(value);
+		this.value=value;
 	}
 
 	@Override
 	public void  checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
-		
+		value.checkSemantics(e);
 	}
 
 	@Override
-	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getType(Environment e) {
+		// "T1,T2..Tn->T"
+		String output_t = e.getEntry(value.name).getType().split("->")[1]; 
+		return output_t;
 	}
 
 }

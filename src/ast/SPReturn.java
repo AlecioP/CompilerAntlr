@@ -15,7 +15,10 @@ public class SPReturn extends SPStmt {
 
 	@Override
 	public void checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
+		value.checkSemantics(e);
+		String type = value.getType(e);
+		if(type != e.getCurrentReturnType())
+			throw new RuntimeException("Type mismatch of return expression");
 		
 	}
 

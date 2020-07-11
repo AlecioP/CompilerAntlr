@@ -1,11 +1,8 @@
 package ast;
+import util.*;
 
 public abstract class SPExp extends SPElementBase {
-	SPElementBase value;
 	
-	SPExp(SPElementBase value){
-		this.value=value;
-	}
-	public abstract String getType();
+	public abstract String getType(Environment e);
 
 }

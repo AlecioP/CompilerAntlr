@@ -8,6 +8,17 @@ public class Environment {
 	//contains the stack of scopes. the last one is always the current active scope
 	//this linked list is used as a stack with LIFO behavior
 	LinkedList<HashMap<String, STentry>> scopes = new LinkedList<HashMap<String,STentry>>();
+	
+	final String MAIN_RETURN_TYPE = "int";
+	
+	LinkedList<String> return_type_stack;
+	
+	
+	public Environment() {
+		return_type_stack = new LinkedList<String>();
+		return_type_stack.add(MAIN_RETURN_TYPE);
+	}
+	
 	int nestingLevel =-1;
 	int offset =0;
 	public void addVariable(String id,String t) {
@@ -52,6 +63,10 @@ public class Environment {
 			}
 		}
 		return null;
+	}
+	
+	public String getCurrentReturnType() {
+		return return_type_stack.peek();
 	}
 
 

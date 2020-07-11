@@ -6,21 +6,20 @@ import util.Environment;
 public class SPNumExp extends SPExp {
 	
 	
+	Integer value;
 
-	public SPNumExp(SPNumber value) {
-		super(value);
+	public SPNumExp(Integer value) {
+		this.value = value;
 	}
 
 	@Override
 	public void checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getType(Environment e) {
+		return "int";
 	}
 
 }

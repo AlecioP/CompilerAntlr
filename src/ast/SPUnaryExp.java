@@ -6,19 +6,39 @@ import util.Environment;
 public class SPUnaryExp extends SPExp {
 	
 
-	public SPUnaryExp(SPUnaryOperation value) {
-		super(value);
+	String operator;
+	SPExp value;
+
+	public SPUnaryExp(String operator, SPExp value) {
+		this.operator = operator;
+		this.value = value;
 	}
 
 	@Override
 	public void checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
-		
+		switch(operator) {
+		case"-":{
+			if(value.getType(e).equals("int")==false)
+				throw new RuntimeException("Cannot compute negative of non integer value");
+			break;
+		}
+		case"!":{
+			if(value.getType(e).equals("bool")==false)
+				throw new RuntimeException("Cannot compute NOT of non boolean value");
+			break;
+		}
+			
+		}
 	}
 
 	@Override
-	public String getType() {
-		// TODO Auto-generated method stub
+	public String getType(Environment e) {
+		switch(operator) {
+		case"-":
+			return "int";
+		case "!":
+			return "bool";
+		}
 		return null;
 	}
 

@@ -15,8 +15,10 @@ public class SPPrint extends SPStmt {
 
 	@Override
 	public void checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
-		
+		value.checkSemantics(e);
+		String type = value.getType(e);
+		if(!(type == "int" || type =="bool"))
+			throw new RuntimeException("Cannot print expression");
 	}
 
 }

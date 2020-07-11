@@ -4,9 +4,11 @@ import util.Environment;
 
 
 public class SPVarExp extends SPExp {
+	
+	String name;
 
-	public SPVarExp(SPVar value) {
-		super(value);
+	public SPVarExp(String name) {
+		this.name = name;
 	}
 
 	@Override
@@ -15,9 +17,8 @@ public class SPVarExp extends SPExp {
 	}
 
 	@Override
-	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getType(Environment e) {
+		return e.getEntry(name).getType();
 	}
 	
 }

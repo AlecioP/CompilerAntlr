@@ -5,10 +5,8 @@ import java.util.*;
 import ast.SPArg;
 import ast.SPAssignment;
 import ast.SPBinExp;
-import ast.SPBinOperation;
 import ast.SPBlock;
 import ast.SPBoolExp;
-import ast.SPBoolean;
 import ast.SPCall;
 import ast.SPCallExp;
 import ast.SPDecFun;
@@ -18,15 +16,12 @@ import ast.SPElementBase;
 import ast.SPExp;
 import ast.SPIfelse;
 import ast.SPNumExp;
-import ast.SPNumber;
 import ast.SPPrint;
 import ast.SPReturn;
 import ast.SPStmt;
 import ast.SPType;
 import ast.SPType.spType;
 import ast.SPUnaryExp;
-import ast.SPUnaryOperation;
-import ast.SPVar;
 import ast.SPVarExp;
 import parser.SimplePlusBaseVisitor;
 import parser.SimplePlusParser.ArgContext;
@@ -210,7 +205,7 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SPElementBase> 
 
 	@Override
 	public SPElementBase visitVarExp(VarExpContext ctx) {
-		return new SPVarExp(new SPVar(ctx.ID().getText()));
+		return new SPVarExp(ctx.ID().getText());
 	}
 
 	@Override
@@ -218,14 +213,14 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SPElementBase> 
 		SPExp right = (SPExp) visit(ctx.right);
 		SPExp left = (SPExp) visit(ctx.left);
 		String op = ctx.op.getText();
-		SPBinOperation operation = new SPBinOperation(right, left, op);
-		return new SPBinExp(operation);
+		
+		return new SPBinExp(right, left, op);
 	}
 
 	@Override
 	public SPElementBase visitValExp(ValExpContext ctx) {
 		Integer value = Integer.valueOf(ctx.NUMBER().getText());
-		return new SPNumExp(new SPNumber(value));
+		return new SPNumExp(value);
 	}
 
 	@Override
@@ -235,13 +230,13 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SPElementBase> 
 		SPExp value = (SPExp) visit(ctx.exp());
 		
 		
-		return new SPUnaryExp(new SPUnaryOperation(operator,value));
+		return new SPUnaryExp(operator,value);
 	}
 
 	@Override
 	public SPElementBase visitBoolExp(BoolExpContext ctx) {
 		Boolean value = Boolean.valueOf(ctx.BOOL().getText());
-		return new SPBoolExp(new SPBoolean(value));
+		return new SPBoolExp(value);
 	}
 
 	@Override
@@ -255,7 +250,7 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SPElementBase> 
 		SPExp value = (SPExp) visit(ctx.exp());
 		
 		
-		return new SPUnaryExp(new SPUnaryOperation(operator,value));
+		return new SPUnaryExp(operator,value);
 	}
 	
 }

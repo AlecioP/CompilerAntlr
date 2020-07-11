@@ -5,20 +5,20 @@ import util.Environment;
 
 public class SPBoolExp extends SPExp {
 
-	public SPBoolExp(SPBoolean value) {
-		super(value);
+	Boolean value;
+
+	public SPBoolExp(Boolean value) {
+		this.value = value;
 	}
 
 	@Override
 	public void checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
 	
 	}
 
 	@Override
-	public String getType() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getType(Environment e) {
+		return "bool";
 	}
 
 }

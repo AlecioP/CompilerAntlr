@@ -19,7 +19,10 @@ public class SPDecVar extends SPStmt {
 		if (e.containsTop(name)) {
 			throw new RuntimeException("Variable "+name+" already declared in this scope");
 		}
-		String ro= value.getType();
+		
+		value.checkSemantics(e);
+		
+		String ro= value.getType(e);
 		if(!ro.equals(type)){
 			throw new RuntimeException("Type mismatch between left and right operands");
 		}

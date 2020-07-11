@@ -17,7 +17,8 @@ public class SPDelete extends SPStmt {
 
 	@Override
 	public void checkSemantics(Environment e) {
-		// TODO Auto-generated method stub
+		if(!e.containsVariable(name))
+			throw new RuntimeException("Deleting undeclared variable");
 
 	}
 
