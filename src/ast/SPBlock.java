@@ -29,7 +29,11 @@ public class SPBlock extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
+		e.openScope();
+		for(SPStmt el : children){
+			el.checkEffects(e);
+		}
+		e.closeScope();
 		
 	}
 

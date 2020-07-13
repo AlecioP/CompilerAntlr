@@ -35,7 +35,7 @@ public class SPIfelse extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 

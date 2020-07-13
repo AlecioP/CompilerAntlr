@@ -3,6 +3,7 @@ package ast;
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentTypes;
+import util.STentryEffects.Effect;
 
 public class SPDecVar extends SPStmt {
 	String type;
@@ -35,7 +36,14 @@ public class SPDecVar extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
+		if(value==null)
+			e.addVariable(name, Effect.BOTTOM);
+		
+		else {
+			value.checkEffects(e);
+			e.addVariable(name, Effect.RW);
+		}
+			
 		
 	}
 

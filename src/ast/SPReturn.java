@@ -26,7 +26,7 @@ public class SPReturn extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
+		value.checkEffects(e);
 		
 	}
 

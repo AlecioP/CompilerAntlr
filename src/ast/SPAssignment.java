@@ -4,6 +4,8 @@ package ast;
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentTypes;
+import util.STentryEffects;
+import util.STentryEffects.Effect;
 
 
 public class SPAssignment extends SPStmt {
@@ -37,8 +39,13 @@ public class SPAssignment extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
-		
+		value.checkEffects(e);
+		Effect status=e.getEntry(name).getEffect();
+		Effect val=STentryEffects.sequence(status, Effect.RW);
+		if(val.equals(Effect.TOP)){
+			throw new RuntimeException("The variable "+ name +" is already deleted");
+		}
+		e.update(name, val);
 	}
 
 

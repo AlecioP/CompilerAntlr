@@ -3,6 +3,8 @@ package ast;
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentTypes;
+import util.STentryEffects;
+import util.STentryEffects.Effect;
 
 
 public class SPDelete extends SPStmt {
@@ -28,7 +30,12 @@ public class SPDelete extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
+		Effect status=e.getEntry(name).getEffect();
+		Effect val=STentryEffects.sequence(status, Effect.DELETE);
+		if(val.equals(Effect.TOP)){
+			throw new RuntimeException("The variable "+ name +" is already deleted");
+		}
+		e.update(name, val);
 		
 	}
 
