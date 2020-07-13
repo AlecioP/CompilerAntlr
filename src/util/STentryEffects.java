@@ -2,9 +2,7 @@ package util;
 
 import java.util.HashMap;
 
-import util.STentryEffects.Effect;
-
-public class STentryEffects  {
+public class STentryEffects  implements Cloneable{
 	public static HashMap<Effect, Integer> effectVal = new HashMap<STentryEffects.Effect, Integer>();
 	static {
 		effectVal.put(Effect.BOTTOM,0);
@@ -49,5 +47,22 @@ public class STentryEffects  {
 		return Effect.TOP;
 
 
+	}
+	
+	@Override
+	protected STentryEffects clone() throws CloneNotSupportedException {
+		
+		switch(effect) {
+		case BOTTOM:
+			return new STentryEffects(Effect.BOTTOM);
+		case DELETE:
+			return new STentryEffects(Effect.DELETE);
+		case RW:
+			return new STentryEffects(Effect.RW);
+		case TOP:
+			return new STentryEffects(Effect.TOP);
+		
+		}
+		return null;
 	}
 }
