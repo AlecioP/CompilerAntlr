@@ -41,7 +41,7 @@ public class SPDecVar extends SPStmt {
 			e.addVariable(name, Effect.BOTTOM);
 		
 		else {
-			value.checkEffects(e, null);
+			value.checkEffects(e, ef);
 			e.addVariable(name, Effect.RW);
 		}
 			

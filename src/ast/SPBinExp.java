@@ -75,8 +75,8 @@ public class SPBinExp extends SPExp {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
-		right.checkEffects(e, null);
-		left.checkEffects(e, null);
+		right.checkEffects(e, ef);
+		left.checkEffects(e, ef);
 		
 	}
 

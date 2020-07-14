@@ -37,15 +37,15 @@ public class SPIfelse extends SPStmt {
 	@Override
 	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		
-		guard.checkEffects(e, null);
+		guard.checkEffects(e, ef);
 		
 		EnvironmentEffects e1 = null;
 		try {
 			e1 = new EnvironmentEffects(e.cloneEnv());
 		} catch (CloneNotSupportedException ex) {ex.printStackTrace();}
 		
-		then_.checkEffects(e, null);
-		else_.checkEffects(e1, null);
+		then_.checkEffects(e, ef);
+		else_.checkEffects(e1, ef);
 		
 		//Merge environments saves in e
 		EnvironmentEffects.mergeEnvs(e, e1);

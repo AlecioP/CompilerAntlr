@@ -32,7 +32,7 @@ public class SPBlock extends SPStmt {
 	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		e.openScope();
 		for(SPStmt el : children){
-			el.checkEffects(e, null);
+			el.checkEffects(e, ef);
 		}
 		e.closeScope();
 		

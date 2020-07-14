@@ -27,7 +27,7 @@ public class SPReturn extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
-		value.checkEffects(e, null);
+		value.checkEffects(e, ef);
 		
 	}
 

@@ -16,7 +16,7 @@ public class SPBoolExp extends SPExp {
 
 	@Override
 	public void checkSemantics(EnvironmentTypes e) {
-	
+		return;
 	}
 
 	@Override
