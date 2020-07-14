@@ -3,6 +3,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 import util.STentryEffects;
 import util.STentryEffects.Effect;
@@ -38,8 +39,8 @@ public class SPAssignment extends SPStmt {
 
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
-		value.checkEffects(e);
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
+		value.checkEffects(e, null);
 		Effect status=e.getEntry(name).getEffect();
 		Effect val=STentryEffects.sequence(status, Effect.RW);
 		if(val.equals(Effect.TOP)){

@@ -70,7 +70,8 @@ public class EnvironmentEffects {
 	}
 	
 	//Merge the environments saving in e1
-	public static void mergeEnvs(EnvironmentEffects e1,EnvironmentEffects e2) {
+	public static boolean mergeEnvs(EnvironmentEffects e1,EnvironmentEffects e2) {
+		boolean modyfied = false;
 		Iterator<HashMap<String, STentryEffects>> it1 = e1.scopes.iterator();
 		Iterator<HashMap<String, STentryEffects>> it2 = e2.scopes.iterator();
 		while(it1.hasNext()) {
@@ -90,17 +91,20 @@ public class EnvironmentEffects {
 				
 				if(ef1_v > ef2_v)
 					scope1.replace(key, scope1.get(key));//No replacing
-				else
+				else {
 					scope1.replace(key, scope2.get(key));
+					modyfied = true;
+				}
 			}
 		}
+		return modyfied;
 	}
 
 	public void openScope(){
-		//TODO 
+		scopes.push(new HashMap<String, STentryEffects>());
 	}
 
 	public void closeScope(){
-		//TODO
+		scopes.pop();
 	}
 }

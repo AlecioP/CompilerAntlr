@@ -4,6 +4,7 @@ import java.util.List;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 public class SPCall extends SPStmt {
@@ -34,6 +35,15 @@ public class SPCall extends SPStmt {
 			String curr = arg.getType(e);
 			if(curr != in_t[it])
 				throw new RuntimeException("Type mismatch for argument "+it+" of function "+name);
+			
+			if(
+					arg.getClass().getSimpleName().equals("SPVarExp")==false 
+					&& 
+					e.getEntry(name).getFunRefArgs()[it]
+				) {
+				throw new RuntimeException("Argument "+it+" of function "+name+" must be passed by reference");
+			}
+			
 			it++;
 		}
 		
@@ -41,7 +51,7 @@ public class SPCall extends SPStmt {
 	}
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		// TODO Auto-generated method stub
 		
 	}

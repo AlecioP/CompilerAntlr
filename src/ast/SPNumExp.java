@@ -2,6 +2,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 
@@ -16,7 +17,7 @@ public class SPNumExp extends SPExp {
 
 	@Override
 	public void checkSemantics(EnvironmentTypes e) {
-		
+		return;
 	}
 
 	@Override
@@ -25,9 +26,8 @@ public class SPNumExp extends SPExp {
 	}
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
-		
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
+		return;
 	}
 
 	@Override

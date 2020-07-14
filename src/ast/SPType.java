@@ -2,6 +2,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 
@@ -24,7 +25,7 @@ public class SPType extends SPElementBase {
 
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -34,6 +35,16 @@ public class SPType extends SPElementBase {
 	public void codeGen(EnvironmentCodeGen e) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public String toString() {
+		if(value.equals(spType.INT))
+			return "int";
+		else if(value.equals(spType.BOOL))
+			return "bool";
+		else
+			return "void";
 	}
 
 }

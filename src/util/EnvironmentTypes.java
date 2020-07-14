@@ -1,6 +1,7 @@
 package util;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class EnvironmentTypes {
@@ -67,6 +68,13 @@ public class EnvironmentTypes {
 	
 	public String getCurrentReturnType() {
 		return return_type_stack.peek();
+	}
+	
+	public void addFunction(String name,String type,boolean[] funref) {
+		Iterator<HashMap<String, STentryTypes>> it = scopes.descendingIterator();
+		STentryTypes entry = new STentryTypes(nestingLevel, type, offset);
+		entry.setFunRefArgs(funref);
+		it.next().put(name, entry);
 	}
 
 

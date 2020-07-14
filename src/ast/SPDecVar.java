@@ -2,6 +2,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 import util.STentryEffects.Effect;
 
@@ -22,8 +23,8 @@ public class SPDecVar extends SPStmt {
 		if (e.containsTop(name)) {
 			throw new RuntimeException("Variable "+name+" already declared in this scope");
 		}
-		
-		value.checkSemantics(e);
+		if(value!=null)
+			value.checkSemantics(e);
 		
 		String ro= value.getType(e);
 		if(!ro.equals(type)){
@@ -35,12 +36,12 @@ public class SPDecVar extends SPStmt {
 	}
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		if(value==null)
 			e.addVariable(name, Effect.BOTTOM);
 		
 		else {
-			value.checkEffects(e);
+			value.checkEffects(e, null);
 			e.addVariable(name, Effect.RW);
 		}
 			

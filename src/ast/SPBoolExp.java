@@ -2,6 +2,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 
@@ -24,9 +25,8 @@ public class SPBoolExp extends SPExp {
 	}
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
-		
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
+		return;
 	}
 
 	@Override

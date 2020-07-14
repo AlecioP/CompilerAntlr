@@ -2,6 +2,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 
@@ -34,17 +35,17 @@ public class SPIfelse extends SPStmt {
 
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		
-		guard.checkEffects(e);
+		guard.checkEffects(e, null);
 		
 		EnvironmentEffects e1 = null;
 		try {
 			e1 = new EnvironmentEffects(e.cloneEnv());
 		} catch (CloneNotSupportedException ex) {ex.printStackTrace();}
 		
-		then_.checkEffects(e);
-		else_.checkEffects(e1);
+		then_.checkEffects(e, null);
+		else_.checkEffects(e1, null);
 		
 		//Merge environments saves in e
 		EnvironmentEffects.mergeEnvs(e, e1);

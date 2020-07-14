@@ -4,6 +4,7 @@ import java.util.List;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 
@@ -28,10 +29,10 @@ public class SPBlock extends SPStmt {
 	}
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		e.openScope();
 		for(SPStmt el : children){
-			el.checkEffects(e);
+			el.checkEffects(e, null);
 		}
 		e.closeScope();
 		

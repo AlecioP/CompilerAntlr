@@ -2,6 +2,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 
@@ -45,8 +46,8 @@ public class SPUnaryExp extends SPExp {
 	}
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
-		// TODO Auto-generated method stub
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
+		value.checkEffects(e, null);
 		
 	}
 

@@ -4,6 +4,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 
 
@@ -25,8 +26,8 @@ public class SPReturn extends SPStmt {
 	}
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
-		value.checkEffects(e);
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
+		value.checkEffects(e, null);
 		
 	}
 

@@ -2,6 +2,7 @@ package ast;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
 import util.STentryEffects;
 import util.STentryEffects.Effect;
@@ -29,7 +30,7 @@ public class SPDelete extends SPStmt {
 
 
 	@Override
-	public void checkEffects(EnvironmentEffects e) {
+	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
 		Effect status=e.getEntry(name).getEffect();
 		Effect val=STentryEffects.sequence(status, Effect.DELETE);
 		if(val.equals(Effect.TOP)){
