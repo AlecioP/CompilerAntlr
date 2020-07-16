@@ -28,7 +28,7 @@ public class SPCallExp extends SPExp {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
-		// TODO Auto-generated method stub
+		value.checkEffects(e, ef);
 		
 	}
 
