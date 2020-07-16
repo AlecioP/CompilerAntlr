@@ -1,11 +1,17 @@
 package ast;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
+import util.STentryEffects;
+import util.STentryEffects.Effect;
+import util.STentryEffectsFun;
 
 public class SPCall extends SPStmt {
 	
@@ -52,7 +58,42 @@ public class SPCall extends SPStmt {
 
 	@Override
 	public void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef) {
-		// TODO Auto-generated method stub
+		HashMap<String,Effect> aliasingMap = new HashMap<String,Effect>();
+		STentryEffectsFun entry = ef.getEntry(name);
+		Iterator<SPExp> it = args.iterator();
+		for(int i=0;i<entry.getFunRefArgs().length;i++) {
+			SPExp argument = it.next();
+			if(entry.getFunRefArgs()[i]) {
+				SPVarExp arg = (SPVarExp) argument;
+				Effect funOut = entry.getSigma()[i];
+				if(aliasingMap.containsKey(arg.name)) {//ALIASING
+					Effect curr = e.getEntry(arg.name).getEffect();
+					Effect seq1 = STentryEffects.sequence(curr, funOut);
+					Effect seq2 = aliasingMap.get(arg.name);
+					Effect par = STentryEffects.parallel(seq1, seq2);
+					aliasingMap.replace(arg.name, par);
+				}else {
+					
+					Effect seq =STentryEffects.sequence(e.getEntry(arg.name).getEffect(), funOut);
+					aliasingMap.put(arg.name, seq);
+				}
+				
+			}
+		}
+		Iterator<Entry<String,Effect>> mapit = aliasingMap.entrySet().iterator();
+		while(mapit.hasNext()) {
+			Entry<String,Effect> curr = mapit.next();
+			if(curr.getValue().equals(Effect.TOP))
+				throw new RuntimeException("Aliasing error in call of function "+name);
+			e.update(curr.getKey(), curr.getValue());
+		}
+		
+		Iterator<SPExp> it1 = args.iterator();
+		for(int i=0;i<entry.getFunRefArgs().length;i++) {
+			SPExp curr = it1.next();
+			if(!entry.getFunRefArgs()[i])
+				curr.checkEffects(e, ef);
+		}
 		
 	}
 

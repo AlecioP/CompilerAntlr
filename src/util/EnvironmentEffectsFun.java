@@ -18,5 +18,8 @@ public class EnvironmentEffectsFun {
 		this.scope = scope;
 	}
 
+	public STentryEffectsFun getEntry(String name) {
+		return scope.get(name);
+	}
 }
 

@@ -49,6 +49,23 @@ public class STentryEffects  implements Cloneable{
 
 	}
 	
+	public static Effect parallel(Effect e1,Effect e2) {
+		final int B=0;//BOTTOM
+		final int R=1;//RW
+		final int D=2;//DELETE
+		final int T=3;//TOP
+		if(STentryEffects.effectVal.get(e1).intValue() == B)
+			return e2;
+		if(STentryEffects.effectVal.get(e2).intValue() == B)
+			return e1;
+		if(
+				STentryEffects.effectVal.get(e1).intValue() == R &&
+				STentryEffects.effectVal.get(e2).intValue() == R 
+			)
+			return Effect.RW;
+		return Effect.TOP;
+	}
+	
 	@Override
 	protected STentryEffects clone() throws CloneNotSupportedException {
 		
