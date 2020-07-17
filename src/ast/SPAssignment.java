@@ -57,14 +57,15 @@ public class SPAssignment extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException {
+		String endl = System.lineSeparator();
 		STentryCodeGen entry = e.getEntry(name);
 		value.codeGen(e, fw);
-		fw.write("move $al $fp");
+		fw.write("move $al $fp"+endl);
 		for(int i=e.getCurrentLevel(); i<entry.getNl();i--){
-			fw.write("lw $al 0($al)");
+			fw.write("lw $al 0($al)"+endl);
 		}
 		int OFFSET= (entry.getOffset()+1)*EnvironmentCodeGen.WORDDIM;
-		fw.write("sw $a0 "+OFFSET+"($al)");
+		fw.write("sw $a0 "+OFFSET+"($al)"+endl);
 	}
 
 }

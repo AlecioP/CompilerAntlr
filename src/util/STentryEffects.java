@@ -32,9 +32,9 @@ public class STentryEffects  implements Cloneable{
 	
 	public static Effect sequence(Effect e1,Effect e2){
 		final int B=0;//BOTTOM
-		final int R=1;//RW
+		//final int R=1;//RW
 		final int D=2;//DELETE
-		final int T=3;//TOP
+		//final int T=3;//TOP
 		int e1V =STentryEffects.effectVal.get(e1).intValue();
 		int e2V = STentryEffects.effectVal.get(e2).intValue();
 		if(e1V<D && e2V<D){
@@ -52,8 +52,8 @@ public class STentryEffects  implements Cloneable{
 	public static Effect parallel(Effect e1,Effect e2) {
 		final int B=0;//BOTTOM
 		final int R=1;//RW
-		final int D=2;//DELETE
-		final int T=3;//TOP
+		//final int D=2;//DELETE
+		//final int T=3;//TOP
 		if(STentryEffects.effectVal.get(e1).intValue() == B)
 			return e2;
 		if(STentryEffects.effectVal.get(e2).intValue() == B)

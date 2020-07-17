@@ -56,7 +56,24 @@ public class SPUnaryExp extends SPExp {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException {
-		// TODO Auto-generated method stub
+		value.codeGen(e, fw);
+		switch(operator) {
+		case"-":{
+			fw.write("neg $a0");
+			break;
+		}
+		case "!":{
+			String nl = System.lineSeparator();
+			String labeln = EnvironmentCodeGen.getNewLabelN();
+			fw.write("beq $a0 1 "+"RET_F"+labeln+nl);
+			fw.write("li $a0 1"+nl);
+			fw.write("b END"+labeln+nl);
+			fw.write("RET_F"+labeln+" :"+nl);
+			fw.write("li $a0 0"+nl);
+			fw.write("END"+labeln+" :"+nl);
+			
+		}
+		}
 		
 	}
 

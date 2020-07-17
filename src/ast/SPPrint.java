@@ -39,8 +39,8 @@ public class SPPrint extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException{
-		// TODO Auto-generated method stub
-		
+		value.codeGen(e, fw);
+		fw.write("print $a0"+System.lineSeparator());
 	}
 
 }

@@ -7,6 +7,7 @@ import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentEffectsFun;
 import util.EnvironmentTypes;
+import util.STentryCodeGen;
 import util.STentryEffects;
 import util.STentryEffects.Effect;
 
@@ -42,8 +43,14 @@ public class SPVarExp extends SPExp {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException {
-		// TODO Auto-generated method stub
-		
+		String endl = System.lineSeparator();
+		STentryCodeGen entry = e.getEntry(name);
+		fw.write("move $al $fp"+endl);
+		for(int i=e.getCurrentLevel(); i<entry.getNl();i--){
+			fw.write("lw $al 0($al)"+endl);
+		}
+		int OFFSET= (entry.getOffset()+1)*EnvironmentCodeGen.WORDDIM;
+		fw.write("lw $a0 "+OFFSET+"($al)"+endl);
 	}
 	
 }

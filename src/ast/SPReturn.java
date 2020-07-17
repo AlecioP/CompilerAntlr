@@ -36,7 +36,8 @@ public class SPReturn extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException{
-		// TODO Auto-generated method stub
+		if(value!=null)
+			value.codeGen(e, fw);
 		
 	}
 

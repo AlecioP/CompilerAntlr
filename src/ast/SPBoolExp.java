@@ -34,7 +34,10 @@ public class SPBoolExp extends SPExp {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException {
-		// TODO Auto-generated method stub
+		if(value)
+			fw.write("li $a0 1");
+		else
+			fw.write("li $a0 0");
 		
 	}
 

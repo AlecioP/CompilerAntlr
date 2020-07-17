@@ -1,6 +1,7 @@
 package ast;
 
 import java.io.FileWriter;
+import java.io.IOException;
 
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
@@ -83,8 +84,124 @@ public class SPBinExp extends SPExp {
 	}
 
 	@Override
-	public void codeGen(EnvironmentCodeGen e, FileWriter fw) {
-		// TODO Auto-generated method stub
+	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException {
+		String endl = System.lineSeparator();
+		String labeln = EnvironmentCodeGen.getNewLabelN();
+		right.codeGen(e, fw);
+		fw.write("sw $a0 0($sp)"+endl);
+		fw.write("addi $sp -4"+endl);
+		left.codeGen(e, fw);
+		fw.write("subi $sp 4"+endl);
+		fw.write("lw $t0 0($sp)"+endl);
+		switch (operator) {
+		case "+":{
+			fw.write("add $a0 $a0 $t0"+endl);
+			break;
+		}
+		case "-":{
+			fw.write("neg $t0"+endl);
+			fw.write("add $a0 $a0 $t0"+endl);
+			break;
+		}
+		case "*":{
+			fw.write("mult $a0 $a0 $t0"+endl);
+			break;
+		}
+		case "/":{
+			fw.write("div $a0 $a0 $t0"+endl);
+			break;
+		}
+		case "==":{
+			fw.write("beq $a0 $t0 RET_T"+labeln+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_T"+labeln+" :"+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			
+			break;
+		}
+		case "!=":{
+			fw.write("beq $a0 $t0 RET_F"+labeln+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_F"+labeln+" :"+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			
+			break;
+		}
+		case ">=":{
+			// A0 >= T0
+			fw.write("bge $a0 $t0 RET_T"+labeln+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_T"+labeln+" :"+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			
+			break;
+			
+		}
+		case "<":{
+			// A0 < T0
+			fw.write("bge $a0 $t0 RET_F"+labeln+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_F"+labeln+" :"+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			
+			break;
+			
+		}
+		case "<=":{
+			// A0 <= T0
+			fw.write("ble $a0 $t0 RET_T"+labeln+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_T"+labeln+" :"+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			
+			break;
+			
+		}
+		case ">":{
+			// A0 > T0
+			fw.write("ble $a0 $t0 RET_F"+labeln+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_F"+labeln+" :"+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			
+			break;
+			
+		}
+		case "&&":{
+			fw.write("beq $a0 0 RET_F"+labeln+endl);
+			fw.write("beq $a0 0 RET_F"+labeln+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_F"+labeln+" :"+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			break;
+		}
+		case "||":{
+			fw.write("beq $a0 1 RET_T"+labeln+endl);
+			fw.write("beq $a0 1 RET_T"+labeln+endl);
+			fw.write("li $a0 0"+endl);
+			fw.write("b END"+labeln+endl);
+			fw.write("RET_T"+labeln+" :"+endl);
+			fw.write("li $a0 1"+endl);
+			fw.write("END"+labeln+" :"+endl);
+			break;
+		}
+		default:
+			throw new RuntimeException("Unknown operator for binary expression");
+		}
 		
 	}
 	

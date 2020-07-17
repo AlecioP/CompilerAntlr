@@ -22,5 +22,5 @@ public abstract class LanguageFactory {
 	
 	public abstract  Parser getParser();
 	
-	public abstract ParseTreeVisitor getVisitor();
+	public abstract ParseTreeVisitor<?> getVisitor();
 }

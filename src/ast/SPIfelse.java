@@ -58,7 +58,19 @@ public class SPIfelse extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
-		// TODO Auto-generated method stub
+		String labeln = EnvironmentCodeGen.getNewLabelN();
+		
+		guard.codeGen(e, fw);
+		
+		fw.write("beq $a0 1 THEN"+labeln+System.lineSeparator());
+		
+		else_.codeGen(e, fw);
+		fw.write("b END"+labeln+System.lineSeparator());
+		
+		fw.write("THEN"+labeln+" :"+System.lineSeparator());
+		then_.codeGen(e, fw);
+		fw.write("END"+labeln+" :");
+		
 		
 	}
 
