@@ -1,5 +1,8 @@
 package ast;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentEffectsFun;
@@ -38,7 +41,7 @@ public class SPVarExp extends SPExp {
 	}
 
 	@Override
-	public void codeGen(EnvironmentCodeGen e) {
+	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException {
 		// TODO Auto-generated method stub
 		
 	}

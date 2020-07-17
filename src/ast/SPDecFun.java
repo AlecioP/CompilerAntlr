@@ -1,5 +1,7 @@
 package ast;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -134,7 +136,7 @@ public class SPDecFun extends SPStmt {
 	}
 
 	@Override
-	public void codeGen(EnvironmentCodeGen e) {
+	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
 		// TODO Auto-generated method stub
 		
 	}

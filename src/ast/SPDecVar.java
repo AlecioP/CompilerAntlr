@@ -1,5 +1,8 @@
 package ast;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentEffectsFun;
@@ -49,8 +52,12 @@ public class SPDecVar extends SPStmt {
 	}
 
 	@Override
-	public void codeGen(EnvironmentCodeGen e) {
-		// TODO Auto-generated method stub
+	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException {
+		e.addVariable(name);
+		if(value != null){
+			SPAssignment a = new SPAssignment(name, value);
+			a.codeGen(e, fw);
+		}
 		
 	}
 

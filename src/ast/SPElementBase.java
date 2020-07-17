@@ -1,5 +1,8 @@
 package ast;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentEffectsFun;
@@ -12,6 +15,6 @@ public abstract class SPElementBase {
 	
 	public abstract void checkEffects(EnvironmentEffects e, EnvironmentEffectsFun ef);
 	
-	public abstract void codeGen(EnvironmentCodeGen e);
+	public abstract void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException;
 	
 }

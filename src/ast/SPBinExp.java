@@ -1,5 +1,7 @@
 package ast;
 
+import java.io.FileWriter;
+
 import util.EnvironmentCodeGen;
 import util.EnvironmentEffects;
 import util.EnvironmentEffectsFun;
@@ -81,7 +83,7 @@ public class SPBinExp extends SPExp {
 	}
 
 	@Override
-	public void codeGen(EnvironmentCodeGen e) {
+	public void codeGen(EnvironmentCodeGen e, FileWriter fw) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -3,8 +3,12 @@ package util;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class EnvironmentCodeGen {
+import com.sun.source.tree.Scope;
 
+public class EnvironmentCodeGen {
+	int offset=0;
+	int nestingLevel=0;
+	public final static int  WORDDIM=4;
 	LinkedList<HashMap<String, STentryCodeGen>> scopes = new LinkedList<HashMap<String,STentryCodeGen>>();
 
 	public STentryCodeGen getEntry(String id) {
@@ -15,13 +19,27 @@ public class EnvironmentCodeGen {
 		}
 		return null;
 	}
+	public int getCurrentLevel(){
+		return nestingLevel;
+	}
+
+	public void addVariable(String id){
+		STentryCodeGen entry = new STentryCodeGen(false,offset,nestingLevel);
+		offset++;
+		scopes.peek().put(id, entry);
+	}
 
 	public void openScope(){
-		//TODO 
+		scopes.push(new HashMap<String, STentryCodeGen>());
+		offset=0;
+		nestingLevel++;
+
 	}
-	
+
 	public void closeScope(){
-		//TODO
+		scopes.pop();
+		offset= scopes.peek().size();
+		nestingLevel--;
 	}
-	
+
 }

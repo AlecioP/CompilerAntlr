@@ -1,5 +1,7 @@
 package ast;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -98,7 +100,7 @@ public class SPCall extends SPStmt {
 	}
 
 	@Override
-	public void codeGen(EnvironmentCodeGen e) {
+	public void codeGen(EnvironmentCodeGen e,FileWriter fw) throws IOException{
 		// TODO Auto-generated method stub
 		
 	}

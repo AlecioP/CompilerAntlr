@@ -1,5 +1,7 @@
 package ast;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import util.EnvironmentCodeGen;
@@ -39,8 +41,13 @@ public class SPBlock extends SPStmt {
 	}
 
 	@Override
-	public void codeGen(EnvironmentCodeGen e) {
-		// TODO Auto-generated method stub
+	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
+		e.openScope();
+		for(SPStmt el : children){
+			el.codeGen(e, fw);
+		}
+		e.closeScope();
+		
 		
 	}
 
