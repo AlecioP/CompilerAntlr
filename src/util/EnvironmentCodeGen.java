@@ -1,6 +1,7 @@
 package util;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class EnvironmentCodeGen {
@@ -22,9 +23,16 @@ public class EnvironmentCodeGen {
 	public int getCurrentLevel(){
 		return nestingLevel;
 	}
+	public String getFunctionLabel(String ID) {
+		Iterator<HashMap<String, STentryCodeGen>> it =scopes.descendingIterator();
+		HashMap<String, STentryCodeGen> map = it.next();
+		return map.get(ID).funLabel;
+		
+		
+	}
 
 	public void addVariable(String id){
-		STentryCodeGen entry = new STentryCodeGen(false,offset,nestingLevel);
+		STentryCodeGen entry = new STentryCodeGen(false,offset,nestingLevel,null);
 		offset++;
 		scopes.peek().put(id, entry);
 	}

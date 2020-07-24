@@ -101,7 +101,19 @@ public class SPCall extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e,FileWriter fw) throws IOException{
-		// TODO Auto-generated method stub
+		fw.write("sw $fp 0($sp)");
+		fw.write("mow $fp $sp");
+		fw.write("addi $sp $sp -4");
+		for(SPExp arg : args) {
+			arg.codeGen(e, fw);
+			fw.write("sw $a0 0($sp)");
+			fw.write("addi $sp $sp -4");
+			
+		}
+		String fEntry=e.getFunctionLabel(name);
+		fw.write("jal "+fEntry);
+		
+		
 		
 	}
 
