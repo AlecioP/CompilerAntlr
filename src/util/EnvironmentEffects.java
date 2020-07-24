@@ -35,8 +35,8 @@ public class EnvironmentEffects {
 			}
 		}
 	}
-	public void addVariable(String id,Effect e) {
-		STentryEffects entry= new STentryEffects(e);
+	public void addVariable(String id,Effect e,String type) {
+		STentryEffects entry= new STentryEffects(e,type);
 		scopes.peek().put(id,entry);
 		
 	}

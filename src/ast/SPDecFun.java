@@ -96,7 +96,7 @@ public class SPDecFun extends SPStmt {
 			//Therefore there is no need for the names of the args to be in 
 			//the same scope of the body
 			for(SPArg arg:args) {
-				e1.addVariable(arg.name, Effect.BOTTOM);
+				e1.addVariable(arg.name, Effect.BOTTOM,arg.type.toString());
 			}
 			//According to the environment containing formal parameters
 			//and the environment containing the function's effects
@@ -137,8 +137,7 @@ public class SPDecFun extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
-		// TODO Auto-generated method stub
-		
+				
 	}
 
 }

@@ -27,6 +27,7 @@ public class SPDelete extends SPStmt {
 	public void checkSemantics(EnvironmentTypes e) {
 		if(!e.containsVariable(name))
 			throw new RuntimeException("Deleting undeclared variable");
+		e.remove(name);
 
 	}
 

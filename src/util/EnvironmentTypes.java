@@ -27,7 +27,7 @@ public class EnvironmentTypes {
 		scopes.peek().put(id,entry);
 		offset++;
 	}
-
+	
 
 	public void openScope(){
 		nestingLevel++;
@@ -75,6 +75,13 @@ public class EnvironmentTypes {
 		STentryTypes entry = new STentryTypes(nestingLevel, type, offset);
 		entry.setFunRefArgs(funref);
 		it.next().put(name, entry);
+	}
+	public void remove(String id){
+		for(HashMap<String, STentryTypes> scope:scopes){
+			if(scope.containsKey(id)) {
+				scope.remove(id);
+			}
+		}
 	}
 
 

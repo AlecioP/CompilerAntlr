@@ -14,13 +14,25 @@ public class STentryEffects  implements Cloneable{
 	public enum Effect{
 		BOTTOM,RW,DELETE,TOP
 	}
-
+	String type;
 
 	Effect effect;
 
-	public STentryEffects(Effect effect) {
+	public STentryEffects(Effect effect,String type) {
 		this.effect = effect;
+		this.type=type;
 	}
+	
+
+	public String getType() {
+		return type;
+	}
+
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 
 	public Effect getEffect() {
 		return effect;
@@ -71,15 +83,16 @@ public class STentryEffects  implements Cloneable{
 		
 		switch(effect) {
 		case BOTTOM:
-			return new STentryEffects(Effect.BOTTOM);
+			return new STentryEffects(Effect.BOTTOM,new String(type));
 		case DELETE:
-			return new STentryEffects(Effect.DELETE);
+			return new STentryEffects(Effect.DELETE,new String(type));
 		case RW:
-			return new STentryEffects(Effect.RW);
+			return new STentryEffects(Effect.RW,new String(type));
 		case TOP:
-			return new STentryEffects(Effect.TOP);
+			return new STentryEffects(Effect.TOP,new String(type));
 		
 		}
 		return null;
 	}
+	
 }
