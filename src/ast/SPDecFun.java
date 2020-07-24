@@ -61,9 +61,9 @@ public class SPDecFun extends SPStmt {
 			tmp.add(alias);
 		}
 		body.children.addAll(tmp);
-		
+		e.addReturnType(retType);
 		body.checkSemantics(e);
-		
+		e.rempoveReturnType(retType);
 		body.children.removeAll(tmp);
 		
 	}
@@ -137,7 +137,27 @@ public class SPDecFun extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
-				
+		String endl = System.lineSeparator();
+		String labelN = e.getNewLabelN();
+		String label ="funEntry_"+labelN;	
+		String labelReturn="funRet_"+labelN;
+		fw.write(label+" :"+endl);
+		e.setFunctionLabel(name, label,labelReturn);
+		fw.write("sw $ra 0($sp)"+endl);
+		fw.write("addi $sp $sp -4"+endl);
+		body.codeGen(e, fw);
+		fw.write(labelReturn+" :"+endl);
+		int offset=e.getOffset();
+		//Once we have done this instruction
+		//the stack pointer is the same as it was before the invocation of codegen of the function's body
+		fw.write("addi $sp $sp"+(4*offset)+endl);
+		fw.write("addi $sp $sp +4"+endl);
+		fw.write("lw $ra 0($sp)"+endl);
+		int k=(args.size()+1)*4;
+		fw.write("addi $sp $sp"+k+endl);
+		fw.write("lw $fp 0($sp)"+endl);
+		fw.write("jr $ra"+endl);
+		
 	}
 
 }

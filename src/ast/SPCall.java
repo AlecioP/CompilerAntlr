@@ -16,7 +16,7 @@ import util.STentryEffects.Effect;
 import util.STentryEffectsFun;
 
 public class SPCall extends SPStmt {
-	
+
 	String name;
 	List<SPExp> args;
 
@@ -27,35 +27,35 @@ public class SPCall extends SPStmt {
 
 	@Override
 	public void checkSemantics(EnvironmentTypes e) {
-		
-		
+
+
 		// "T1,T2..Tn->T"
-		
-		
+
+
 		String[] in_t = e.getEntry(name).getType().split("->")[0].split(",");
-		
+
 		if(args.size()!=in_t.length)
 			throw new RuntimeException("Wrong number of arguments for function "+name);
-		
+
 		int it = 0;
 		for(SPExp arg : args) {
 			arg.checkSemantics(e);
 			String curr = arg.getType(e);
 			if(curr != in_t[it])
 				throw new RuntimeException("Type mismatch for argument "+it+" of function "+name);
-			
+
 			if(
 					arg.getClass().getSimpleName().equals("SPVarExp")==false 
 					&& 
 					e.getEntry(name).getFunRefArgs()[it]
-				) {
+					) {
 				throw new RuntimeException("Argument "+it+" of function "+name+" must be passed by reference");
 			}
-			
+
 			it++;
 		}
-		
-		
+
+
 	}
 
 	@Override
@@ -75,11 +75,11 @@ public class SPCall extends SPStmt {
 					Effect par = STentryEffects.parallel(seq1, seq2);
 					aliasingMap.replace(arg.name, par);
 				}else {
-					
+
 					Effect seq =STentryEffects.sequence(e.getEntry(arg.name).getEffect(), funOut);
 					aliasingMap.put(arg.name, seq);
 				}
-				
+
 			}
 		}
 		Iterator<Entry<String,Effect>> mapit = aliasingMap.entrySet().iterator();
@@ -89,32 +89,34 @@ public class SPCall extends SPStmt {
 				throw new RuntimeException("Aliasing error in call of function "+name);
 			e.update(curr.getKey(), curr.getValue());
 		}
-		
+
 		Iterator<SPExp> it1 = args.iterator();
 		for(int i=0;i<entry.getFunRefArgs().length;i++) {
 			SPExp curr = it1.next();
 			if(!entry.getFunRefArgs()[i])
 				curr.checkEffects(e, ef);
 		}
-		
+
 	}
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e,FileWriter fw) throws IOException{
-		fw.write("sw $fp 0($sp)");
-		fw.write("mow $fp $sp");
-		fw.write("addi $sp $sp -4");
+		String endl = System.lineSeparator();
+		e.offsetOpenScope();
+		e.getCallStack().add(name);
+		fw.write("sw $fp 0($sp)"+endl);
+		fw.write("mov $fp $sp"+endl);
+		fw.write("addi $sp $sp -4"+endl);
 		for(SPExp arg : args) {
 			arg.codeGen(e, fw);
-			fw.write("sw $a0 0($sp)");
-			fw.write("addi $sp $sp -4");
-			
+			fw.write("sw $a0 0($sp)"+endl);
+			fw.write("addi $sp $sp -4"+endl);
 		}
 		String fEntry=e.getFunctionLabel(name);
-		fw.write("jal "+fEntry);
-		
-		
-		
+		fw.write("jal "+fEntry+endl);
+		e.getCallStack().remove();
+		e.offsetCloseScope();
+
 	}
 
 }

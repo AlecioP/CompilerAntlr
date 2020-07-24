@@ -19,6 +19,12 @@ public class EnvironmentTypes {
 		return_type_stack = new LinkedList<String>();
 		return_type_stack.add(MAIN_RETURN_TYPE);
 	}
+	public void addReturnType(String type) {
+		return_type_stack.add(type);
+	}
+	public void rempoveReturnType(String type) {
+		return_type_stack.remove();
+	}
 	
 	int nestingLevel =-1;
 	int offset =0;

@@ -6,8 +6,16 @@ public class STentryCodeGen {
 	String funLabel;
 	int offset;
 	int nl;
+	String funRetLabel;
 	
-	public STentryCodeGen(boolean isFun, int offset,int nl,String funLabel) {
+	public String getFunRetLabel() {
+		return funRetLabel;
+	}
+	public void setFunRetLabel(String funRetLabel) {
+		this.funRetLabel = funRetLabel;
+	}
+	public STentryCodeGen(boolean isFun, int offset,int nl,String funLabel,String funRetLabel) {
+		this.funRetLabel=funRetLabel;
 		this.funLabel=funLabel;
 		this.isFun = isFun;
 		this.nl = nl;

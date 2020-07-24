@@ -45,6 +45,8 @@ public class SPBlock extends SPStmt {
 		e.openScope();
 		for(SPStmt el : children){
 			el.codeGen(e, fw);
+			if(el.getClass().getSimpleName().equals("SPReturn")) 
+				break;
 		}
 		e.closeScope();
 		
