@@ -1,6 +1,8 @@
 package main;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -16,6 +18,10 @@ import parser.SimplePlusParser;
 import parser.SimplePlusParser.BlockContext;
 import parser.factories.LanguageFactory;
 import parser.factories.SimplePlusFactory;
+import util.EnvironmentCodeGen;
+import util.EnvironmentEffects;
+import util.EnvironmentEffectsFun;
+import util.EnvironmentTypes;
 
 public class Compiler {
 
@@ -46,7 +52,34 @@ public class Compiler {
 			
 			SimplePlusBaseVisitor<SPElementBase> v = (SimplePlusBaseVisitor<SPElementBase>) visitor;
 			
+			//AST
 			SPBlock mainBlock = (SPBlock) v.visitBlock(ctx);
+			//Types and scopes check
+			EnvironmentTypes et = new EnvironmentTypes();
+			et.openScope();
+			mainBlock.checkSemantics(et);
+			//Effects check
+			EnvironmentEffects ee = new EnvironmentEffects();
+			ee.openScope();
+			EnvironmentEffectsFun eef = new EnvironmentEffectsFun();
+			mainBlock.checkEffects(ee, eef);
+			//Code generation
+			String outfile = "out.simple";
+			
+			File fd = new File(outfile);
+			
+			fd.createNewFile();
+			
+			FileWriter fw = new FileWriter(fd);
+			
+			//fw.write("7 Sept 2020", 0, 11);
+			
+			EnvironmentCodeGen ec = new EnvironmentCodeGen();
+			ec.openScope();
+			mainBlock.codeGen(ec, fw);
+			
+			fw.flush();
+			fw.close();
 			
 		} catch(IOException e) {
 			e.printStackTrace();

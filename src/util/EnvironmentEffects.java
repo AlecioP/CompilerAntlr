@@ -47,7 +47,7 @@ public class EnvironmentEffects {
 		clone = new LinkedList<HashMap<String, STentryEffects>>();
 		
 		//List iterator from the back 
-		Iterator<HashMap<String, STentryEffects>> it = clone.descendingIterator();
+		Iterator<HashMap<String, STentryEffects>> it = this.scopes.descendingIterator();
 		//While there are hashmaps to clone
 		while(it.hasNext()) {
 			//Peek the current hashmap

@@ -35,7 +35,9 @@ public class SPNumExp extends SPExp {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException{
-		fw.write("li $a0 "+value.intValue());
+		
+		String endl = System.lineSeparator();
+		fw.write("li $a0 "+value.intValue()+endl);
 		
 	}
 

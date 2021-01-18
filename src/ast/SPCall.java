@@ -41,7 +41,7 @@ public class SPCall extends SPStmt {
 		for(SPExp arg : args) {
 			arg.checkSemantics(e);
 			String curr = arg.getType(e);
-			if(curr != in_t[it])
+			if(!curr.equals( in_t[it]))
 				throw new RuntimeException("Type mismatch for argument "+it+" of function "+name);
 
 			if(

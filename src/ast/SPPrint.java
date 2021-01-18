@@ -23,7 +23,7 @@ public class SPPrint extends SPStmt {
 	public void checkSemantics(EnvironmentTypes e) {
 		value.checkSemantics(e);
 		String type = value.getType(e);
-		if(!(type == "int" || type =="bool"))
+		if(!(type.equals("int") || type.equals("bool")))
 			throw new RuntimeException("Cannot print expression");
 	}
 

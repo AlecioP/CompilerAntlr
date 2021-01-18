@@ -59,8 +59,9 @@ public class SPDecFun extends SPStmt {
 		for(SPArg arg : args) {
 			SPDecVar alias = new SPDecVar(arg.type.toString(), arg.name, null);
 			tmp.add(alias);
+			
 		}
-		body.children.addAll(tmp);
+		body.children.addAll(0,tmp);
 		e.addReturnType(retType);
 		body.checkSemantics(e);
 		e.rempoveReturnType(retType);
@@ -90,6 +91,9 @@ public class SPDecFun extends SPStmt {
 		while(true) {
 			
 			EnvironmentEffects e1 = new EnvironmentEffects();
+			e1.openScope();
+			
+			
 			
 			//At this point checkSemantic has already checked the (NON) existence 
 			//of variables with the same name as the arguments of the function
@@ -138,23 +142,35 @@ public class SPDecFun extends SPStmt {
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
 		String endl = System.lineSeparator();
-		String labelN = e.getNewLabelN();
+		String labelN = EnvironmentCodeGen.getNewLabelN();
 		String label ="funEntry_"+labelN;	
 		String labelReturn="funRet_"+labelN;
 		fw.write(label+" :"+endl);
 		e.setFunctionLabel(name, label,labelReturn);
 		fw.write("sw $ra 0($sp)"+endl);
 		fw.write("addi $sp $sp -4"+endl);
+		
+		List<SPDecVar> tmp = new LinkedList<SPDecVar>();
+		for(SPArg arg : args) {
+			SPDecVar alias = new SPDecVar(arg.type.toString(), arg.name, null);
+			tmp.add(alias);
+			
+		}
+		body.children.addAll(0,tmp);
+		
 		body.codeGen(e, fw);
+		
+		body.children.removeAll(tmp);
+		
 		fw.write(labelReturn+" :"+endl);
 		int offset=e.getOffset();
 		//Once we have done this instruction
 		//the stack pointer is the same as it was before the invocation of codegen of the function's body
-		fw.write("addi $sp $sp"+(4*offset)+endl);
+		fw.write("addi $sp $sp "+(4*offset)+endl);
 		fw.write("addi $sp $sp +4"+endl);
 		fw.write("lw $ra 0($sp)"+endl);
 		int k=(args.size()+1)*4;
-		fw.write("addi $sp $sp"+k+endl);
+		fw.write("addi $sp $sp "+k+endl);
 		fw.write("lw $fp 0($sp)"+endl);
 		fw.write("jr $ra"+endl);
 		

@@ -60,16 +60,18 @@ public class SPIfelse extends SPStmt {
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
 		String labeln = EnvironmentCodeGen.getNewLabelN();
 		
+		String endl = System.lineSeparator();
+		
 		guard.codeGen(e, fw);
 		
-		fw.write("beq $a0 1 THEN"+labeln+System.lineSeparator());
+		fw.write("beq $a0 1 THEN"+labeln+endl);
 		
 		else_.codeGen(e, fw);
-		fw.write("b END"+labeln+System.lineSeparator());
+		fw.write("b END"+labeln+endl);
 		
-		fw.write("THEN"+labeln+" :"+System.lineSeparator());
+		fw.write("THEN"+labeln+" :"+endl);
 		then_.codeGen(e, fw);
-		fw.write("END"+labeln+" :");
+		fw.write("END"+labeln+" :"+endl);
 		
 		
 	}
