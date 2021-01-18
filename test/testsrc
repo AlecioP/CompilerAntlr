@@ -1,19 +1,42 @@
+NOTE (Grammatica): 
+- Mancano le parentesi nel blocco piu' esterno
+- Le funzioni void devono avere il tipo di ritorno 'void' esplicito
+- Gli argomenti passati per riferimento vanno scritti 
+  come TIPO 'var' NOME e non come 'var' TIPO NOME 
+- Dopo la guardia dell'IF non ci deve essere 'then' 
+  
+
 CODICI DA VERIFICARE:
 =====
  int x = 4 ; delete x ; int x = 5 ;   // questo codice e` corretto!
 =====
 f(var int x, var int y){ delete x; delete y; } 
     //  cosa accade in {int x = 3 ; f(x,x) ;} 
+    
+OUTPUT : Aliasing error in call of function f 
+    
 =====
 f(var int x, int y){if (y== 0) delete x; else x=x+y ; } 
+
+OUTPUT : OK
+
 =====
 h(var int x, var int y){ if (y==0) delete x ; else { x = x-1; h(x,y) ;}
+
+OUTPUT : OK
+
 =====
-g(var int x, var int y){ if (y==0) delete x ; else { x = x-1; g(x,y) ; delete x ;}
+g(var int x, var int y){ if (y==0) delete x ; else { x = x-1; g(x,y) ; delete x ;} }
+
+OUTPUT : x already deleted (perche' g nel blocco else cancella gia' x, prima del delete esplicito)
+
 =====
 int x = 1;
 f(int y){ if (y == 0) then { print(x);} else { f(y-1) ; }
 f(54) ;
+
+OUTPUT : OK
+
 =====
 int u = 1 ;
 f(var int x, int n){ 
@@ -22,6 +45,9 @@ f(var int x, int n){
 	delete x ;
 }
 f(u,6) ;
+
+OUTPUT : OK
+
 =====
 f(int m, int n){
 	if (m>n) { print(m+n) ;}
@@ -29,4 +55,7 @@ f(int m, int n){
 }
 f(5,4) ;
 // cosa succede se la invoco con f(4,5)?
+
+OUTPUT : OK
+
 =====

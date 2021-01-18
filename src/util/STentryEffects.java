@@ -95,4 +95,10 @@ public class STentryEffects  implements Cloneable{
 		return null;
 	}
 	
+	
+	@Override
+	public String toString() {
+		return super.toString() + " "+this.type+" "+this.effect;
+	}
+	
 }

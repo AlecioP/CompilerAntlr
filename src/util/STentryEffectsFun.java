@@ -23,5 +23,12 @@ public class STentryEffectsFun {
 		this.sigma = sigma;
 	}
 	
+	@Override
+	public String toString() {
+		String ret = "";
+		for(int i = 0 ; i< sigma.length;i++)
+			ret = ret + sigma[i].toString();
+		return ret + super.toString();
+	}
 	
 }

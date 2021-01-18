@@ -107,4 +107,10 @@ public class EnvironmentEffects {
 	public void closeScope(){
 		scopes.pop();
 	}
+
+	public LinkedList<HashMap<String, STentryEffects>> getScopes() {
+		return scopes;
+	}
+	
+	
 }

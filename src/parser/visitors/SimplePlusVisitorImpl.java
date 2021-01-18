@@ -102,7 +102,9 @@ public class SimplePlusVisitorImpl extends SimplePlusBaseVisitor<SPElementBase> 
 	public SPElementBase visitDecVar(DecVarContext ctx) {
 		String type=ctx.type().getText();
 		String name=ctx.ID().getText();
-		SPExp value = (SPExp)visit(ctx.exp());
+		SPExp value = null;
+		if(ctx.exp()!=null)
+			value = (SPExp)visit(ctx.exp());
 		
 		return new SPDecVar(type, name, value);
 	}

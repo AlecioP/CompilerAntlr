@@ -88,7 +88,10 @@ public class SPDecFun extends SPStmt {
 		
 		ef.addFunction(name,entry);
 		
+		
+		
 		while(true) {
+			
 			
 			EnvironmentEffects e1 = new EnvironmentEffects();
 			e1.openScope();
@@ -102,6 +105,16 @@ public class SPDecFun extends SPStmt {
 			for(SPArg arg:args) {
 				e1.addVariable(arg.name, Effect.BOTTOM,arg.type.toString());
 			}
+			
+			//Clone all global variables
+			EnvironmentEffects GLOBALS = null;
+			try {
+				GLOBALS = new EnvironmentEffects(e.cloneEnv());
+			} catch (CloneNotSupportedException error) {error.printStackTrace();System.exit(-1);}
+			
+			//Add args to global variables' scope 
+			e1.getScopes().addAll(GLOBALS.getScopes());
+			
 			//According to the environment containing formal parameters
 			//and the environment containing the function's effects
 			//compute the effects on the arguments
