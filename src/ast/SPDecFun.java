@@ -161,7 +161,8 @@ public class SPDecFun extends SPStmt {
 		fw.write(label+" :"+endl);
 		e.setFunctionLabel(name, label,labelReturn);
 		fw.write("sw $ra 0($sp)"+endl);
-		fw.write("addi $sp $sp -4"+endl);
+		fw.write("li $a0 -4"+endl);
+		fw.write("add $sp $sp $a0"+endl);
 		
 		List<SPDecVar> tmp = new LinkedList<SPDecVar>();
 		for(SPArg arg : args) {
@@ -179,11 +180,14 @@ public class SPDecFun extends SPStmt {
 		int offset=e.getOffset();
 		//Once we have done this instruction
 		//the stack pointer is the same as it was before the invocation of codegen of the function's body
-		fw.write("addi $sp $sp "+(4*offset)+endl);
-		fw.write("addi $sp $sp +4"+endl);
+		fw.write("li $a0 "+(4*offset)+endl);
+		fw.write("add $sp $sp $a0"+endl);
+		fw.write("li $a0 +4"+endl);
+		fw.write("add $sp $sp $a0"+endl);
 		fw.write("lw $ra 0($sp)"+endl);
 		int k=(args.size()+1)*4;
-		fw.write("addi $sp $sp "+k+endl);
+		fw.write("li $a0 "+k+endl);
+		fw.write("add $sp $sp $a0"+endl);
 		fw.write("lw $fp 0($sp)"+endl);
 		fw.write("jr $ra"+endl);
 		

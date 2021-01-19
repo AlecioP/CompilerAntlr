@@ -49,7 +49,7 @@ public class SPVarExp extends SPExp {
 		for(int i=e.getCurrentLevel(); i<entry.getNl();i--){
 			fw.write("lw $al 0($al)"+endl);
 		}
-		int OFFSET= (entry.getOffset()+1)*EnvironmentCodeGen.WORDDIM;
+		int OFFSET= (-1)*(entry.getOffset()+1)*EnvironmentCodeGen.WORDDIM;
 		fw.write("lw $a0 "+OFFSET+"($al)"+endl);
 	}
 	

@@ -20,7 +20,7 @@ public class VM {
 				if(split[1].equals(":")) {
 					machine.getLabels().put(split[0], Integer.valueOf(instruction));
 				}else {
-					ArrayList<String> param=(ArrayList<String>) Arrays.asList(split);
+					ArrayList<String> param=new ArrayList<String>(Arrays.asList(split));
 					String name=param.remove(0);
 					machine.getCode().add(new Command(name,param));
 					instruction++;
@@ -48,8 +48,8 @@ public class VM {
 		this.labels= new HashMap<String, Integer>();
 		this.registers=new HashMap<String, Integer>();
 		registers.put("$ip", 0);
-		registers.put("$sp", MEMSIZE-1);
-		registers.put("$fp", MEMSIZE-1);
+		registers.put("$sp", MEMSIZE-EnvironmentCodeGen.WORDDIM);
+		registers.put("$fp", MEMSIZE-EnvironmentCodeGen.WORDDIM);
 		registers.put("$ra", 0);
 		registers.put("$a0", 0);
 		registers.put("$al", 0);
@@ -72,6 +72,7 @@ public class VM {
 		final int wordDim=EnvironmentCodeGen.WORDDIM;
 		r("$ip",0);
 		while ( true ) {
+			System.out.println("Istruzione "+r("$ip"));
 			if(r("$sp")<0) {
 				System.out.println("\nError: Out of memory");
 				return;
@@ -102,6 +103,10 @@ public class VM {
 					break;
 				}case "addi":{
 					int v = Integer.valueOf(current.args.get(1)).intValue()+r(current.args.get(0));
+					r(current.args.get(0),v);
+					break;
+				}case "add":{
+					int v = r(current.args.get(1))+r(current.args.get(2));
 					r(current.args.get(0),v);
 					break;
 				}case "subi":{

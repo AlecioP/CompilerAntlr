@@ -105,12 +105,14 @@ public class SPCall extends SPStmt {
 		e.offsetOpenScope();
 		e.getCallStack().add(name);
 		fw.write("sw $fp 0($sp)"+endl);
-		fw.write("mov $fp $sp"+endl);
-		fw.write("addi $sp $sp -4"+endl);
+		fw.write("move $fp $sp"+endl);
+		fw.write("li $a0 -4"+endl);
+		fw.write("add $sp $sp $a0"+endl);
 		for(SPExp arg : args) {
 			arg.codeGen(e, fw);
 			fw.write("sw $a0 0($sp)"+endl);
-			fw.write("addi $sp $sp -4"+endl);
+			fw.write("li $a0 -4"+endl);
+			fw.write("add $sp $sp $a0"+endl);
 		}
 		String fEntry=e.getFunctionLabel(name);
 		fw.write("jal "+fEntry+endl);
