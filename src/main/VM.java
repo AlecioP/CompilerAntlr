@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
+
+import util.EnvironmentCodeGen;
 public class VM {
 
 	public static void main(String[] args) {
@@ -37,17 +39,28 @@ public class VM {
 
 	private  ArrayList<Command> code ;
 	private  HashMap<String, Integer> labels; 
+	private  HashMap<String,Integer> registers;
 	private int[] memory = new int[MEMSIZE];
-	private int ip = 0;
-	private int sp = MEMSIZE;       
-	private int fp = MEMSIZE; 
-	private int ra;           
-	private int a0;
+
 
 	public VM() {
 		this.code = new ArrayList<Command>();
 		this.labels= new HashMap<String, Integer>();
+		this.registers=new HashMap<String, Integer>();
+		registers.put("$ip", 0);
+		registers.put("$sp", MEMSIZE-1);
+		registers.put("$fp", MEMSIZE-1);
+		registers.put("$ra", 0);
+		registers.put("$a0", 0);
+		registers.put("$al", 0);
 	}
+	protected int r(String a) {
+		return registers.get(a).intValue();
+	}
+	protected void r(String a,int b) {
+		registers.replace(a,b);
+	}
+
 
 	public HashMap<String, Integer> getLabels() {
 		return labels;
@@ -56,16 +69,91 @@ public class VM {
 		return code;
 	}
 	public void cpu() {
-		ip=0;
+		final int wordDim=EnvironmentCodeGen.WORDDIM;
+		r("$ip",0);
 		while ( true ) {
-			if(sp<0) {
+			if(r("$sp")<0) {
 				System.out.println("\nError: Out of memory");
 				return;
 			}
 			else {
-				Command current = this.code.get(ip++);
+				Command current = this.code.get(r("$ip"));
+				r("$ip",r("$ip")+1);
 				switch(current.cmd){
+				case "lw":{
+					String r1 = current.args.get(1).split("[()]")[1];
+					String of = current.args.get(1).split("[()]")[0];
+					int offset=Integer.valueOf(of).intValue();
+					int v1 = r(r1);
+					for(int i=0;i<wordDim; i++) 
+						r(current.args.get(0),memory[v1+offset-i]);
+					break;
+				}case "sw":{
+					String r1 = current.args.get(1).split("[()]")[1];
+					String of = current.args.get(1).split("[()]")[0];
+					int offset=Integer.valueOf(of).intValue();
+					int v1 = r(r1);
+					for(int i=0;i<wordDim; i++) 
+						memory[v1+offset-i]=r(current.args.get(0));
+					break;
+				}case "li":{
+					int v = Integer.valueOf(current.args.get(1)).intValue();
+					r(current.args.get(0),v);
+					break;
+				}case "addi":{
+					int v = Integer.valueOf(current.args.get(1)).intValue()+r(current.args.get(0));
+					r(current.args.get(0),v);
+					break;
+				}case "subi":{
+					int v = Integer.valueOf(current.args.get(1)).intValue()-r(current.args.get(0));
+					r(current.args.get(0),v);
+					break;
+				}case "move":
+				case"mov":{
+					int v = r(current.args.get(1));
+					r(current.args.get(0),v);
+					break;
 
+				}case "jr":{
+					int v = r(current.args.get(0));
+					r("$ip",v);
+					break;
+
+				}case "jal":
+				case "b":{
+					int v= labels.get(current.args.get(0)).intValue();
+					r("$ip",v);
+					break;
+
+				}case "beq":{
+					int v1=r(current.args.get(0));
+					int v2=r(current.args.get(1));
+					if (v1==v2){
+						int v= labels.get(current.args.get(2)).intValue();
+						r("$ip",v);
+					}
+					break;
+
+				}case "ble":{
+					int v1=r(current.args.get(0));
+					int v2=r(current.args.get(1));
+					if (v2<=v1){
+						int v= labels.get(current.args.get(2)).intValue();
+						r("$ip",v);
+					}
+					break;
+
+				}case "print":{
+					System.out.println(r(current.args.get(0)));
+					break;
+
+				}case "halt":{
+					System.out.println("TERMINATED");
+					System.exit(0);
+				}default: {
+					System.out.println("Error command "+ current.cmd +" not found");
+					System.exit(-1);
+				}
 				}
 			} 
 		}
