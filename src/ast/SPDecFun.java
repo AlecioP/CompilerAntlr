@@ -156,6 +156,7 @@ public class SPDecFun extends SPStmt {
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
 		String endl = System.lineSeparator();
 		String labelN = EnvironmentCodeGen.getNewLabelN();
+		fw.write("jal SAFE_"+labelN+endl);
 		String label ="funEntry_"+labelN;	
 		String labelReturn="funRet_"+labelN;
 		fw.write(label+" :"+endl);
@@ -191,6 +192,10 @@ public class SPDecFun extends SPStmt {
 		fw.write("add $sp $sp $a0"+endl);
 		fw.write("lw $fp 0($sp)"+endl);
 		fw.write("jr $ra"+endl);
+		
+		
+		//SAFE LABEL
+		fw.write("SAFE_"+labelN+" :"+endl);
 		
 	}
 

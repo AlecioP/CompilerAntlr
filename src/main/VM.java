@@ -54,6 +54,7 @@ public class VM {
 		registers.put("$ra", 0);
 		registers.put("$a0", 0);
 		registers.put("$al", 0);
+		registers.put("$t0", 0);
 	}
 	protected int r(String a) {
 		return registers.get(a).intValue();
