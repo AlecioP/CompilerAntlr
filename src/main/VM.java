@@ -74,17 +74,17 @@ public class VM {
 		final int wordDim=EnvironmentCodeGen.WORDDIM;
 		r("$ip",0);
 		while ( true ) {
-			System.out.println("Istruzione "+r("$ip"));
+			System.err.println("Istruzione "+r("$ip"));
 			if(r("$sp")<0) {
-				System.out.println("\nError: Out of memory");
+				System.err.println("\nError: Out of memory");
 				return;
 			}
 			else {
 				Command current = this.code.get(r("$ip"));
-				System.out.println(current.cmd+" "+current.args);
-				System.out.println("Cpu status : "+registers);
+				System.err.println(current.cmd+" "+current.args);
+				System.err.println("Cpu status : "+registers);
 				r("$ip",r("$ip")+1);
-				System.out.println("Next instruction "+r("$ip"));
+				System.err.println("Next instruction "+r("$ip"));
 				switch(current.cmd){
 				case "lw":{
 					String r1 = current.args.get(1).split("[()]")[1];
@@ -138,8 +138,18 @@ public class VM {
 					break;
 
 				}case "beq":{
-					int v1=r(current.args.get(0));
-					int v2=r(current.args.get(1));
+					int v1=0,v2=0;
+					//ASSIGN FIRST VALUE
+					if(current.args.get(0).charAt(0)=='$')
+						v1=r(current.args.get(0));
+					else
+						v1=Integer.valueOf(current.args.get(0));
+					//ASSIGN SECOND VALUE
+					if(current.args.get(1).charAt(0)=='$')
+						v2=r(current.args.get(1));
+					else
+						v2=Integer.valueOf(current.args.get(1));
+					//COMPARE
 					if (v1==v2){
 						int v= labels.get(current.args.get(2)).intValue();
 						r("$ip",v);
@@ -147,8 +157,18 @@ public class VM {
 					break;
 
 				}case "ble":{
-					int v1=r(current.args.get(0));
-					int v2=r(current.args.get(1));
+					int v1=0,v2=0;
+					//ASSIGN FIRST VALUE
+					if(current.args.get(0).charAt(0)=='$')
+						v1=r(current.args.get(0));
+					else
+						v1=Integer.valueOf(current.args.get(0));
+					//ASSIGN SECOND VALUE
+					if(current.args.get(1).charAt(0)=='$')
+						v2=r(current.args.get(1));
+					else
+						v2=Integer.valueOf(current.args.get(1));
+					//COMPARE
 					if (v2<=v1){
 						int v= labels.get(current.args.get(2)).intValue();
 						r("$ip",v);
