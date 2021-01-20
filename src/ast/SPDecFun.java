@@ -184,6 +184,7 @@ public class SPDecFun extends SPStmt {
 		fw.write("add $sp $sp $a0"+endl);
 		fw.write("li $a0 +4"+endl);
 		fw.write("add $sp $sp $a0"+endl);
+		//Read old frame pointer
 		fw.write("lw $ra 0($sp)"+endl);
 		int k=(args.size()+1)*4;
 		fw.write("li $a0 "+k+endl);

@@ -32,6 +32,7 @@ public class VM {
 
 			e.printStackTrace();
 		}
+		machine.getCode().add(new Command("halt", null));
 		machine.cpu();
 	}
 	//public static final int CODESIZE = 10000;
@@ -48,8 +49,8 @@ public class VM {
 		this.labels= new HashMap<String, Integer>();
 		this.registers=new HashMap<String, Integer>();
 		registers.put("$ip", 0);
-		registers.put("$sp", MEMSIZE-EnvironmentCodeGen.WORDDIM);
-		registers.put("$fp", MEMSIZE-EnvironmentCodeGen.WORDDIM);
+		registers.put("$sp", MEMSIZE-1);
+		registers.put("$fp", MEMSIZE-1);
 		registers.put("$ra", 0);
 		registers.put("$a0", 0);
 		registers.put("$al", 0);
@@ -58,7 +59,7 @@ public class VM {
 		return registers.get(a).intValue();
 	}
 	protected void r(String a,int b) {
-		registers.replace(a,b);
+		registers.replace(a,Integer.valueOf(b));
 	}
 
 
@@ -79,14 +80,17 @@ public class VM {
 			}
 			else {
 				Command current = this.code.get(r("$ip"));
+				System.out.println(current.cmd+" "+current.args);
+				System.out.println("Cpu status : "+registers);
 				r("$ip",r("$ip")+1);
+				System.out.println("Next instruction "+r("$ip"));
 				switch(current.cmd){
 				case "lw":{
 					String r1 = current.args.get(1).split("[()]")[1];
 					String of = current.args.get(1).split("[()]")[0];
 					int offset=Integer.valueOf(of).intValue();
 					int v1 = r(r1);
-					for(int i=0;i<wordDim; i++) 
+					for(int i=wordDim-1; i>=0; i--) 
 						r(current.args.get(0),memory[v1+offset-i]);
 					break;
 				}case "sw":{
@@ -94,7 +98,7 @@ public class VM {
 					String of = current.args.get(1).split("[()]")[0];
 					int offset=Integer.valueOf(of).intValue();
 					int v1 = r(r1);
-					for(int i=0;i<wordDim; i++) 
+					for(int i=wordDim-1; i>=0; i--) 
 						memory[v1+offset-i]=r(current.args.get(0));
 					break;
 				}case "li":{
@@ -110,7 +114,9 @@ public class VM {
 					r(current.args.get(0),v);
 					break;
 				}case "subi":{
-					int v = Integer.valueOf(current.args.get(1)).intValue()-r(current.args.get(0));
+					int add1 = Integer.valueOf(current.args.get(1)).intValue();
+					int add2 = r(current.args.get(0));
+					int v = add2-add1;
 					r(current.args.get(0),v);
 					break;
 				}case "move":
