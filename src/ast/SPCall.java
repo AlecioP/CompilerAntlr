@@ -104,6 +104,7 @@ public class SPCall extends SPStmt {
 		String endl = System.lineSeparator();
 		e.offsetOpenScope();
 		e.getCallStack().add(name);
+		fw.write("# CALL OF FUNCTION"+endl);
 		fw.write("sw $fp 0($sp)"+endl);
 		fw.write("move $fp $sp"+endl);
 		fw.write("li $a0 -4"+endl);

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.Lexer;
@@ -72,7 +73,11 @@ public class Compiler {
 			
 			FileWriter fw = new FileWriter(fd);
 			
-			//fw.write("7 Sept 2020", 0, 11);
+			String endl = System.lineSeparator();
+			java.time.LocalDate today = LocalDate.now();
+			
+			fw.write("# Simple plus bytecode compiled on day "+endl);
+			fw.write("# Compiled on "+today.getDayOfMonth()+" "+today.getMonth()+" "+today.getYear()+endl);
 			
 			EnvironmentCodeGen ec = new EnvironmentCodeGen();
 			ec.openScope();

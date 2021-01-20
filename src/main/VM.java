@@ -16,6 +16,10 @@ public class VM {
 			int instruction =0;
 			while (scan.hasNextLine()) {
 				String data = scan.nextLine();
+				
+				if(data.charAt(0)=='#')
+					continue;
+				
 				String[] split = data.split(" ");
 				if(split[1].equals(":")) {
 					machine.getLabels().put(split[0], Integer.valueOf(instruction));
@@ -94,7 +98,8 @@ public class VM {
 					for(int i=wordDim-1; i>=0; i--) 
 						r(current.args.get(0),memory[v1+offset-i]);
 					break;
-				}case "sw":{
+				}
+				case "sw":{
 					String r1 = current.args.get(1).split("[()]")[1];
 					String of = current.args.get(1).split("[()]")[0];
 					int offset=Integer.valueOf(of).intValue();
@@ -102,42 +107,50 @@ public class VM {
 					for(int i=wordDim-1; i>=0; i--) 
 						memory[v1+offset-i]=r(current.args.get(0));
 					break;
-				}case "li":{
+				}
+				case "li":{
 					int v = Integer.valueOf(current.args.get(1)).intValue();
 					r(current.args.get(0),v);
 					break;
-				}case "addi":{
+				}
+				case "addi":{
 					int v = Integer.valueOf(current.args.get(1)).intValue()+r(current.args.get(0));
 					r(current.args.get(0),v);
 					break;
-				}case "add":{
+				}
+				case "add":{
 					int v = r(current.args.get(1))+r(current.args.get(2));
 					r(current.args.get(0),v);
 					break;
-				}case "subi":{
+				}
+				case "subi":{
 					int add1 = Integer.valueOf(current.args.get(1)).intValue();
 					int add2 = r(current.args.get(0));
 					int v = add2-add1;
 					r(current.args.get(0),v);
 					break;
-				}case "move":
+				}
+				case "move":
 				case"mov":{
 					int v = r(current.args.get(1));
 					r(current.args.get(0),v);
 					break;
 
-				}case "jr":{
+				}
+				case "jr":{
 					int v = r(current.args.get(0));
 					r("$ip",v);
 					break;
 
-				}case "jal":
+				}
+				case "jal":
 				case "b":{
 					int v= labels.get(current.args.get(0)).intValue();
 					r("$ip",v);
 					break;
 
-				}case "beq":{
+				}
+				case "beq":{
 					int v1=0,v2=0;
 					//ASSIGN FIRST VALUE
 					if(current.args.get(0).charAt(0)=='$')
@@ -156,7 +169,27 @@ public class VM {
 					}
 					break;
 
-				}case "ble":{
+				}
+				case "bge":{
+					int v1=0,v2=0;
+					//ASSIGN FIRST VALUE
+					if(current.args.get(0).charAt(0)=='$')
+						v1=r(current.args.get(0));
+					else
+						v1=Integer.valueOf(current.args.get(0));
+					//ASSIGN SECOND VALUE
+					if(current.args.get(1).charAt(0)=='$')
+						v2=r(current.args.get(1));
+					else
+						v2=Integer.valueOf(current.args.get(1));
+					//COMPARE
+					if (v2>=v1){
+						int v= labels.get(current.args.get(2)).intValue();
+						r("$ip",v);
+					}
+					break;
+				}
+				case "ble":{
 					int v1=0,v2=0;
 					//ASSIGN FIRST VALUE
 					if(current.args.get(0).charAt(0)=='$')
@@ -175,11 +208,28 @@ public class VM {
 					}
 					break;
 
-				}case "print":{
+				}
+				case "print":{
 					System.out.println(r(current.args.get(0)));
 					break;
 
-				}case "halt":{
+				}
+				case "neg":{
+					int v = r(current.args.get(0))*(-1);
+					r(current.args.get(0),v);
+					break;
+				}
+				case "mult":{
+					int v = r(current.args.get(1))*r(current.args.get(2));
+					r(current.args.get(0),v);
+					break;
+				}
+				case "div":{
+					int v = r(current.args.get(1))/r(current.args.get(2));
+					r(current.args.get(0),v);
+					break;
+				}
+				case "halt":{
 					System.out.println("TERMINATED");
 					System.exit(0);
 				}default: {
