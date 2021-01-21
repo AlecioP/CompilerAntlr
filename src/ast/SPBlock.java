@@ -42,13 +42,13 @@ public class SPBlock extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
-		e.openScope();
+		e.openScope(false);
 		for(SPStmt el : children){
 			el.codeGen(e, fw);
 			if(el.getClass().getSimpleName().equals("SPReturn")) 
 				break;
 		}
-		e.closeScope();
+		e.closeScope(false);
 		
 		
 	}

@@ -43,4 +43,8 @@ public class SPArg extends SPElementBase {
 		
 	}
 
+	public String getName() {
+		return name;
+	}
+
 }

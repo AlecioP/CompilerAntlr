@@ -80,7 +80,7 @@ public class Compiler {
 			fw.write("# Compiled on "+today.getDayOfMonth()+" "+today.getMonth()+" "+today.getYear()+endl);
 			
 			EnvironmentCodeGen ec = new EnvironmentCodeGen();
-			ec.openScope();
+			//ec.openScope(false);
 			mainBlock.codeGen(ec, fw);
 			
 			fw.flush();

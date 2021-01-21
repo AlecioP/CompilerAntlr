@@ -1,5 +1,6 @@
 package util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -31,14 +32,14 @@ public class EnvironmentCodeGen {
 		
 		
 	}
-	public void setFunctionLabel(String ID,String label,String retLabel) {
+	public void setFunctionLabel(String ID,String label,String retLabel,ArrayList<String> pN) {
 		Iterator<HashMap<String, STentryCodeGen>> it =scopes.descendingIterator();
 		HashMap<String, STentryCodeGen> map = it.next();
-		map.put(ID, new STentryCodeGen(true, 0, 0, label,retLabel));
+		map.put(ID, new STentryCodeGen(true, 0, 0, label,retLabel,pN));
 	}
 
 	public void addVariable(String id){
-		STentryCodeGen entry = new STentryCodeGen(false,offset,nestingLevel,null,null);
+		STentryCodeGen entry = new STentryCodeGen(false,offset,nestingLevel,null,null,null);
 		offset++;
 		scopes.peek().put(id, entry);
 	}
@@ -48,15 +49,17 @@ public class EnvironmentCodeGen {
 	public void offsetCloseScope(){
 		offset=scopes.peek().size();
 	}
-	public void openScope(){
+	public void openScope(boolean isNewFrame){
 		scopes.push(new HashMap<String, STentryCodeGen>());
-		nestingLevel++;
+		if(isNewFrame)
+			nestingLevel++;
 
 	}
 
-	public void closeScope(){
+	public void closeScope(boolean closeFrame){
 		scopes.pop();
-		nestingLevel--;
+		if(closeFrame)
+			nestingLevel--;
 	}
 	
 	public static String getNewLabelN() {
@@ -79,6 +82,12 @@ public class EnvironmentCodeGen {
 	}
 	public LinkedList<String> getCallStack() {
 		return callStack;
+	}
+	public void setNestingLevel(int nestingLevel) {
+		this.nestingLevel = nestingLevel;
+	}
+	public int getNestingLevel() {
+		return nestingLevel;
 	}
 	
 }

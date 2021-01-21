@@ -78,26 +78,26 @@ public class VM {
 		final int wordDim=EnvironmentCodeGen.WORDDIM;
 		r("$ip",0);
 		while ( true ) {
-			System.err.println("Istruzione "+r("$ip"));
+			//System.err.println("Instruction "+r("$ip"));
 			if(r("$sp")<0) {
 				System.err.println("\nError: Out of memory");
 				return;
 			}
 			else {
 				Command current = this.code.get(r("$ip"));
-				System.err.println(current.cmd+" "+current.args);
+				System.err.println("\n"+current.cmd+" "+current.args);
 				System.err.println("Cpu status : "+registers);
 				/*PRINT MEMORY*/
 				System.err.print("[{");
-				for(int it = memory.length-1;it>9900;it--) {
+				for(int it = memory.length-1;it>9800;it--) {
 					System.err.print(memory[it]+", ");
 					if((MEMSIZE-1-it)%4==3)
-						System.err.print("}{");
+						System.err.print("}"+(it-1)+"->{");
 				}
 				System.err.println("]");
 				/*PRINT MEMORY*/
 				r("$ip",r("$ip")+1);
-				System.err.println("Next instruction "+r("$ip"));
+				//System.err.println("Next instruction "+r("$ip"));
 				switch(current.cmd){
 				case "lw":{
 					String r1 = current.args.get(1).split("[()]")[1];
@@ -152,12 +152,18 @@ public class VM {
 					break;
 
 				}
-				case "jal":
-				case "b":{
+				case "jal":{
+					r("$ra",r("$ip"));
+					System.err.println("Instruction at return is : "+this.code.get(r("$ra")).cmd);
 					int v= labels.get(current.args.get(0)).intValue();
 					r("$ip",v);
 					break;
 
+				}
+				case "b":{
+					int v= labels.get(current.args.get(0)).intValue();
+					r("$ip",v);
+					break;
 				}
 				case "beq":{
 					int v1=0,v2=0;

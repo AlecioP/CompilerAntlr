@@ -2,6 +2,7 @@ package ast;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -156,26 +157,30 @@ public class SPDecFun extends SPStmt {
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw) throws IOException{
 		String endl = System.lineSeparator();
 		String labelN = EnvironmentCodeGen.getNewLabelN();
-		fw.write("jal SAFE_"+labelN+endl);
+		fw.write("b SAFE_"+labelN+endl);
 		String label ="funEntry_"+labelN;	
 		String labelReturn="funRet_"+labelN;
 		fw.write(label+" :"+endl);
-		e.setFunctionLabel(name, label,labelReturn);
-		fw.write("sw $ra 0($sp)"+endl);
-		fw.write("li $a0 -4"+endl);
-		fw.write("add $sp $sp $a0"+endl);
 		
-		List<SPDecVar> tmp = new LinkedList<SPDecVar>();
-		for(SPArg arg : args) {
-			SPDecVar alias = new SPDecVar(arg.type.toString(), arg.name, null);
-			tmp.add(alias);
-			
+
+		int nlBefore = e.getNestingLevel();
+		e.setNestingLevel(nlBefore+1);
+		
+		e.offsetOpenScope();
+		
+		ArrayList<String> names = new ArrayList<String>();
+		
+		for(SPArg carg : args) {
+			names.add(carg.name);
+			//SAVING PARAMS NAMES IN THE ENVIRONMENT
+			e.addVariable(carg.name);
 		}
-		body.children.addAll(0,tmp);
+		e.setFunctionLabel(name, label,labelReturn,names);
 		
 		body.codeGen(e, fw);
+		e.setNestingLevel(nlBefore);
+		e.offsetCloseScope();
 		
-		body.children.removeAll(tmp);
 		
 		fw.write(labelReturn+" :"+endl);
 		int offset=e.getOffset();

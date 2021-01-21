@@ -91,7 +91,7 @@ public class SPBinExp extends SPExp {
 		fw.write("sw $a0 0($sp)"+endl);
 		fw.write("addi $sp -4"+endl);
 		left.codeGen(e, fw);
-		fw.write("subi $sp 4"+endl);
+		fw.write("addi $sp 4"+endl);
 		fw.write("lw $t0 0($sp)"+endl);
 		switch (operator) {
 		case "+":{

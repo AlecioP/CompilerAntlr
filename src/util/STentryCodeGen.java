@@ -1,5 +1,8 @@
 package util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class STentryCodeGen {
 
 	boolean isFun;
@@ -7,6 +10,7 @@ public class STentryCodeGen {
 	int offset;
 	int nl;
 	String funRetLabel;
+	ArrayList<String> paramNames;
 	
 	public String getFunRetLabel() {
 		return funRetLabel;
@@ -14,7 +18,7 @@ public class STentryCodeGen {
 	public void setFunRetLabel(String funRetLabel) {
 		this.funRetLabel = funRetLabel;
 	}
-	public STentryCodeGen(boolean isFun, int offset,int nl,String funLabel,String funRetLabel) {
+	public STentryCodeGen(boolean isFun, int offset,int nl,String funLabel,String funRetLabel,ArrayList<String> paramNames) {
 		this.funRetLabel=funRetLabel;
 		this.funLabel=funLabel;
 		this.isFun = isFun;
@@ -45,5 +49,9 @@ public class STentryCodeGen {
 	public void setNl(int nl) {
 		this.nl = nl;
 	}
+	public List<String> getParamNames() {
+		return paramNames;
+	}
+	
 	
 }
