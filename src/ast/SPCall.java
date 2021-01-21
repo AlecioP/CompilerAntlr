@@ -103,6 +103,7 @@ public class SPCall extends SPStmt {
 	public void codeGen(EnvironmentCodeGen e,FileWriter fw) throws IOException{
 		String endl = System.lineSeparator();
 		e.offsetOpenScope();
+		e.openScope();
 		e.getCallStack().add(name);
 		fw.write("# CALL OF FUNCTION"+endl);
 		fw.write("sw $fp 0($sp)"+endl);
@@ -118,6 +119,7 @@ public class SPCall extends SPStmt {
 		String fEntry=e.getFunctionLabel(name);
 		fw.write("jal "+fEntry+endl);
 		e.getCallStack().remove();
+		e.closeScope();
 		e.offsetCloseScope();
 
 	}

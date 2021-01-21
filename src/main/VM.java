@@ -53,7 +53,7 @@ public class VM {
 		this.labels= new HashMap<String, Integer>();
 		this.registers=new HashMap<String, Integer>();
 		registers.put("$ip", 0);
-		registers.put("$sp", MEMSIZE-1);
+		registers.put("$sp", MEMSIZE-1-EnvironmentCodeGen.WORDDIM);
 		registers.put("$fp", MEMSIZE-1);
 		registers.put("$ra", 0);
 		registers.put("$a0", 0);
@@ -87,6 +87,15 @@ public class VM {
 				Command current = this.code.get(r("$ip"));
 				System.err.println(current.cmd+" "+current.args);
 				System.err.println("Cpu status : "+registers);
+				/*PRINT MEMORY*/
+				System.err.print("[{");
+				for(int it = memory.length-1;it>9900;it--) {
+					System.err.print(memory[it]+", ");
+					if((MEMSIZE-1-it)%4==3)
+						System.err.print("}{");
+				}
+				System.err.println("]");
+				/*PRINT MEMORY*/
 				r("$ip",r("$ip")+1);
 				System.err.println("Next instruction "+r("$ip"));
 				switch(current.cmd){

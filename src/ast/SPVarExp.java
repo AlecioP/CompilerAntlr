@@ -46,7 +46,7 @@ public class SPVarExp extends SPExp {
 		String endl = System.lineSeparator();
 		STentryCodeGen entry = e.getEntry(name);
 		fw.write("move $al $fp"+endl);
-		for(int i=e.getCurrentLevel(); i<entry.getNl();i--){
+		for(int i=e.getCurrentLevel(); i>entry.getNl();i--){
 			fw.write("lw $al 0($al)"+endl);
 		}
 		int OFFSET= (-1)*(entry.getOffset()+1)*EnvironmentCodeGen.WORDDIM;
