@@ -63,11 +63,12 @@ public class SPDecVar extends SPStmt {
 	public void codeGen(EnvironmentCodeGen e, FileWriter fw)throws IOException {
 		String endl = System.lineSeparator();
 		e.addVariable(name);
-		fw.write("addi $sp -"+EnvironmentCodeGen.WORDDIM+endl);
+		
 		if(value != null){
 			SPAssignment a = new SPAssignment(name, value);
 			a.codeGen(e, fw);
 		}
+		fw.write("addi $sp -"+EnvironmentCodeGen.WORDDIM+endl);
 
 	}
 

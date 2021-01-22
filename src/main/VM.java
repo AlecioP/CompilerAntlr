@@ -53,7 +53,7 @@ public class VM {
 		this.labels= new HashMap<String, Integer>();
 		this.registers=new HashMap<String, Integer>();
 		registers.put("$ip", 0);
-		registers.put("$sp", MEMSIZE-1-EnvironmentCodeGen.WORDDIM);
+		registers.put("$sp", MEMSIZE-1-(EnvironmentCodeGen.WORDDIM*2));
 		registers.put("$fp", MEMSIZE-1);
 		registers.put("$ra", 0);
 		registers.put("$a0", 0);
@@ -93,6 +93,8 @@ public class VM {
 					System.err.print(memory[it]+", ");
 					if((MEMSIZE-1-it)%4==3)
 						System.err.print("}"+(it-1)+"->{");
+					if(r("$fp")==it-1)
+						System.err.print("\n\n LAST FRAME");
 				}
 				System.err.println("]");
 				/*PRINT MEMORY*/

@@ -47,7 +47,11 @@ public class EnvironmentCodeGen {
 		offset=0;
 	}
 	public void offsetCloseScope(){
-		offset=scopes.peek().size();
+		int counter = 0;
+		for(STentryCodeGen en : scopes.peek().values())
+			if(en.isFun==false)
+				counter++;
+		offset=counter;
 	}
 	public void openScope(boolean isNewFrame){
 		scopes.push(new HashMap<String, STentryCodeGen>());
@@ -90,4 +94,7 @@ public class EnvironmentCodeGen {
 		return nestingLevel;
 	}
 	
+	public String scopesToStr() {
+		return scopes.toString();
+	}
 }

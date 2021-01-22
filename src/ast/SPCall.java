@@ -101,29 +101,42 @@ public class SPCall extends SPStmt {
 
 	@Override
 	public void codeGen(EnvironmentCodeGen e,FileWriter fw) throws IOException{
+		
+		/*
+		 * NEW FRAME IS :
+		 * 
+		 * [ OLD_FP ] [ OLD_RA ] [ PARAM_1 ] ... [ PARAM_N ]
+		 * 
+		 * */
+		
+		
 		String endl = System.lineSeparator();
 		e.offsetOpenScope();
 		e.openScope(true);
 		e.getCallStack().add(name);
 		fw.write("# CALL OF FUNCTION"+endl);
+		
+		//UPDATE FP AND SAVE OLD FP
 		fw.write("sw $fp 0($sp)"+endl);
 		fw.write("move $fp $sp"+endl);
-		fw.write("li $a0 -4"+endl);
-		fw.write("add $sp $sp $a0"+endl);
+		fw.write("addi $sp -4"+endl);
 		
+		
+		//SAVE OLD RA
+		fw.write("sw $ra 0($sp)"+endl);
+		fw.write("addi $sp -4"+endl);
+		
+		//WRITE CALL PARAMS
 		for(SPExp arg : args) {
 			arg.codeGen(e, fw);
 			fw.write("sw $a0 0($sp)"+endl);
 			fw.write("li $a0 -4"+endl);
 			fw.write("add $sp $sp $a0"+endl);
 		}
-		/*SAVE OLD $RA VALUE*/
-		fw.write("#SAVING OLD $RA VALUE"+endl);
-		fw.write("sw $ra 0($sp)"+endl);
-		fw.write("li $a0 -4"+endl);
-		fw.write("add $sp $sp $a0"+endl);
-		/*SAVE OLD $RA VALUE*/
+		
 		String fEntry=e.getFunctionLabel(name);
+		
+		//UPDATE RA AND JUMP
 		fw.write("jal "+fEntry+endl);
 		e.getCallStack().remove();
 		e.closeScope(true);

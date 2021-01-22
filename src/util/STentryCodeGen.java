@@ -53,5 +53,16 @@ public class STentryCodeGen {
 		return paramNames;
 	}
 	
+	@Override
+	public String toString() {
+		String funIs;
+		if(isFun)
+			funIs = "FUN";
+		else
+			funIs= "VAR";
+		
+		return funIs + " ("+funLabel+" ... "+funRetLabel+") "+paramNames+" NL "+nl;
+	}
+	
 	
 }

@@ -179,24 +179,57 @@ public class SPDecFun extends SPStmt {
 		
 		body.codeGen(e, fw);
 		e.setNestingLevel(nlBefore);
-		e.offsetCloseScope();
+		
 		
 		
 		fw.write(labelReturn+" :"+endl);
-		int offset=e.getOffset();
+		
+		e.offsetCloseScope();
 		//Once we have done this instruction
 		//the stack pointer is the same as it was before the invocation of codegen of the function's body
-		fw.write("li $a0 "+(4*offset)+endl);
-		fw.write("add $sp $sp $a0"+endl);
-		fw.write("li $a0 +4"+endl);
-		fw.write("add $sp $sp $a0"+endl);
-		//Read old frame pointer
-		fw.write("lw $ra 0($sp)"+endl);
-		int k=(args.size()+1)*4;
-		fw.write("li $a0 "+k+endl);
-		fw.write("add $sp $sp $a0"+endl);
+		
+		
+		/*
+		 * Memory contains old Ret address
+		 * 
+		 * Situation of cells over time :
+		 * 
+		 * Mem		$t0		$a0		$ra
+		 * 
+		 * OLD_RA	-		-		NEW_RA		Execute Mem->t0
+		 * 
+		 * OLD_RA	OLD_RA	-		NEW_RA		Execute ra->a0
+		 * 
+		 * OLD_RA	OLD_RA	NEW_RA	NEW_RA		Execute t0->ra
+		 * 
+		 * OLD_RA	OLD_RA	NEW_RA	OLD_RA		Execute a0->t0
+		 * 
+		 * OLD_RA	NEW_RA	NEW_RA	OLD_RA
+		 * 
+		 * 
+		 * Now when VM executes JR $t0 the program 
+		 * jumps to the last $ra value generated but
+		 * the actual $ra register contains the value of 
+		 * the outer scope's return address
+		 * 
+		 * 
+		 * */
+		
+		
+		//Free space occupied by all variables in scope
+		fw.write("move $sp $fp"+endl);
+		
+		fw.write("#READ OLD $RA"+endl);
+		
+		fw.write("lw $t0 -4($sp)"+endl);
+		fw.write("move $a0 $ra"+endl);
+		fw.write("move $ra $t0"+endl);
+		fw.write("move $t0 $a0"+endl);
+		
+		//Restore old frame pointer
 		fw.write("lw $fp 0($sp)"+endl);
-		fw.write("jr $ra"+endl);
+		
+		fw.write("jr $t0"+endl);
 		
 		
 		//SAFE LABEL
