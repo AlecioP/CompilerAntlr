@@ -53,7 +53,8 @@ public class VM {
 		this.labels= new HashMap<String, Integer>();
 		this.registers=new HashMap<String, Integer>();
 		registers.put("$ip", 0);
-		registers.put("$sp", MEMSIZE-1-(EnvironmentCodeGen.WORDDIM*2));
+		//The first 3 cells of the frame are occupied by OLD_FP OLD_RA NESTING_LEVEL
+		registers.put("$sp", MEMSIZE-1-(EnvironmentCodeGen.WORDDIM*3));
 		registers.put("$fp", MEMSIZE-1);
 		registers.put("$ra", 0);
 		registers.put("$a0", 0);
