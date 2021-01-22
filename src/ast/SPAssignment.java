@@ -64,7 +64,8 @@ public class SPAssignment extends SPStmt {
 		for(int i=e.getCurrentLevel(); i<entry.getNl();i--){
 			fw.write("lw $al 0($al)"+endl);
 		}
-		int OFFSET= (-1)*(entry.getOffset()+2)*EnvironmentCodeGen.WORDDIM;
+		//OFFSET + 3 because the first 3 cells of the frame are occupied by OLD_FP OLD_RA NESTING_LEVEL
+		int OFFSET= (-1)*(entry.getOffset()+3)*EnvironmentCodeGen.WORDDIM;
 		fw.write("sw $a0 "+OFFSET+"($al)"+endl);
 	}
 
