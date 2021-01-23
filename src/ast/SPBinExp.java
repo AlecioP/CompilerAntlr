@@ -169,7 +169,7 @@ public class SPBinExp extends SPExp {
 		}
 		case ">":{
 			// A0 > T0
-			fw.write("ble $a0 $t0 RET_F"+labeln+endl);
+			fw.write("ble $t0 $a0 RET_F"+labeln+endl);
 			fw.write("li $a0 1"+endl);
 			fw.write("b END"+labeln+endl);
 			fw.write("RET_F"+labeln+" :"+endl);

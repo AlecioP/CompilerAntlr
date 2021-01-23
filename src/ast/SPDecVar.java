@@ -43,7 +43,8 @@ public class SPDecVar extends SPStmt {
 		if(e.getEntry(name)!=null){
 			Effect status =e.getEntry(name).getEffect();
 			if(!status.equals(Effect.DELETE)){
-				throw new RuntimeException("Variable "+name+" already declared in this scope");
+				throw new RuntimeException("Variable "+name+" already declared in this scope "+status);
+				
 			}
 			if(!e.getEntry(name).getType().equals(type))
 				throw new RuntimeException("Can't change type of variable "+name);

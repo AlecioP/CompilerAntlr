@@ -25,7 +25,16 @@ public class SPIfelse extends SPStmt {
 
 	@Override
 	public void checkSemantics(EnvironmentTypes e) {
+		EnvironmentTypes e1 =null ;
 		guard.checkSemantics(e);
+		try {
+			e1 = (EnvironmentTypes) e.clone();
+		} catch (CloneNotSupportedException err) {
+			
+			err.printStackTrace();
+		}
+		
+		
 		String t1 = guard.getType(e);
 		if(t1 != "bool")
 			throw new RuntimeException("Guard clause is not of bool type");
@@ -33,7 +42,7 @@ public class SPIfelse extends SPStmt {
 		then_.checkSemantics(e);
 		
 		if(else_ != null)
-			else_.checkSemantics(e);
+			else_.checkSemantics(e1);
 	}
 
 

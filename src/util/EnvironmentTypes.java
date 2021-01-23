@@ -1,10 +1,12 @@
 package util;
 
 import java.util.HashMap;
+
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 
-public class EnvironmentTypes {
+public class EnvironmentTypes implements Cloneable {
 
 	//contains the stack of scopes. the last one is always the current active scope
 	//this linked list is used as a stack with LIFO behavior
@@ -13,7 +15,37 @@ public class EnvironmentTypes {
 	final String MAIN_RETURN_TYPE = "int";
 	
 	LinkedList<String> return_type_stack;
-	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		LinkedList<String> cloneRS=new LinkedList<String>();
+		LinkedList<HashMap<String, STentryTypes>> cloneScope = new LinkedList<HashMap<String,STentryTypes>>();
+		Iterator<String> it1= return_type_stack.iterator(); 
+		while(it1.hasNext()) {
+			cloneRS.add(new String(it1.next()));
+			
+		}
+		Iterator<HashMap<String,STentryTypes>> it2 = this.scopes.descendingIterator();
+		while(it2.hasNext()) {
+			//Peek the current hashmap
+			HashMap<String, STentryTypes> origin = it2.next();
+			//Create a new hashmap
+			HashMap<String, STentryTypes> copy = new HashMap<String, STentryTypes>();
+			//Iterator of the keyset of hashmap
+			Iterator<Entry<String, STentryTypes>> mapit = origin.entrySet().iterator();
+			//For each key
+			while(mapit.hasNext()) {
+				Entry<String,STentryTypes> pair = mapit.next();
+				//Add to hashmap clone the key-value pair
+				copy.put(new String((String)pair.getKey()),(STentryTypes)pair.getValue().clone() );
+			}
+			//Add the hashmap to the list clone
+			cloneScope.push(copy);
+		}
+		EnvironmentTypes eCopy = new EnvironmentTypes() ;
+		eCopy.return_type_stack=cloneRS;
+		eCopy.scopes=cloneScope;
+		return eCopy;
+	}
 	
 	public EnvironmentTypes() {
 		return_type_stack = new LinkedList<String>();

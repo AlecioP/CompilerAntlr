@@ -1,7 +1,7 @@
 package util;
 
 
-public class STentryTypes {
+public class STentryTypes implements Cloneable {
 
 	private int nl;
 	private String type;
@@ -41,6 +41,19 @@ public class STentryTypes {
 
 	public int getNestinglevel (){
 		return nl ;
+	}
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		STentryTypes ecopy = new STentryTypes(this.nl,new String(this.type),this.offset); 
+		if (funRefArgs!=null) {
+			boolean[] rfs = new boolean[funRefArgs.length];
+			for(int i=0;i<rfs.length;i++) {
+				rfs[i]=funRefArgs[i];
+			}
+			ecopy.funRefArgs=rfs;
+		}
+
+		return ecopy;
 	}
 
 }  
