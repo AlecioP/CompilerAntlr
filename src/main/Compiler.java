@@ -83,6 +83,8 @@ public class Compiler {
 			//ec.openScope(false);
 			mainBlock.codeGen(ec, fw);
 			
+			System.out.println("COMPILED");
+			
 			fw.flush();
 			fw.close();
 			

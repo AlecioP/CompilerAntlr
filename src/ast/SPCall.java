@@ -112,28 +112,50 @@ public class SPCall extends SPStmt {
 		
 		String endl = System.lineSeparator();
 		e.offsetOpenScope();
-		e.openScope(true);
+		e.openScope(false);
 		e.getCallStack().add(name);
 		fw.write("# CALL OF FUNCTION"+endl);
 		
 		//UPDATE FP AND SAVE OLD FP
+		fw.write("# UPDATE FP"+endl);
 		fw.write("sw $fp 0($sp)"+endl);
 		fw.write("move $fp $sp"+endl);
 		fw.write("addi $sp -4"+endl);
 		
 		
 		//SAVE OLD RA
+		fw.write("# STORE RA"+endl);
 		fw.write("sw $ra 0($sp)"+endl);
+		fw.write("addi $sp -4"+endl);
+		
+		//WRITE NEW NL
+		fw.write("# INCR NL"+endl);
+		fw.write("move $al $fp"+endl);
+		fw.write("lw $al 0($al)"+endl);
+		fw.write("lw $a0 -8($al)"+endl);
+		fw.write("addi $a0 1"+endl);
+		fw.write("sw $a0 0($sp)"+endl);
 		fw.write("addi $sp -4"+endl);
 		
 		//WRITE CALL PARAMS
 		for(SPExp arg : args) {
+			
+			//Workaround to read variables from old frame pointer
+			fw.write("sw $fp 0($sp)"+endl);
+			fw.write("addi $sp -4"+endl);
+			fw.write("lw $fp 0($fp)"+endl);
+			/**/
+			
 			arg.codeGen(e, fw);
+			
+			//Quickly restore new frame pointer
+			fw.write("addi $sp 4"+endl);
+			fw.write("lw $fp 0($sp)"+endl);
+			/**/
 			fw.write("sw $a0 0($sp)"+endl);
-			fw.write("li $a0 -4"+endl);
-			fw.write("add $sp $sp $a0"+endl);
+			fw.write("addi $sp -4"+endl);
 		}
-		
+		e.setNestingLevel(e.getNestingLevel()+1);
 		String fEntry=e.getFunctionLabel(name);
 		
 		//UPDATE RA AND JUMP

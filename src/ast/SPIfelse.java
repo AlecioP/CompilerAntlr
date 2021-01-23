@@ -61,11 +61,13 @@ public class SPIfelse extends SPStmt {
 		String labeln = EnvironmentCodeGen.getNewLabelN();
 		
 		String endl = System.lineSeparator();
-		
+		fw.write("# IF GUARD"+endl);
 		guard.codeGen(e, fw);
 		
+		fw.write("# IF CHECK"+endl);
 		fw.write("beq $a0 1 THEN"+labeln+endl);
 		
+		fw.write("# ELSE BRANCH"+endl);
 		else_.codeGen(e, fw);
 		fw.write("b END"+labeln+endl);
 		

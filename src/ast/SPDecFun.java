@@ -177,6 +177,7 @@ public class SPDecFun extends SPStmt {
 		}
 		e.setFunctionLabel(name, label,labelReturn,names);
 		
+		fw.write("# FUNCTION BODY"+endl);
 		body.codeGen(e, fw);
 		e.setNestingLevel(nlBefore);
 		

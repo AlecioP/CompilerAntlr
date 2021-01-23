@@ -62,25 +62,30 @@ public class SPAssignment extends SPStmt {
 		
 		String labelN = EnvironmentCodeGen.getNewLabelN();
 		
+		value.codeGen(e, fw);
+		
 		fw.write("move $al $fp"+endl);
 		
-		//READ CURRENT NL
-		fw.write("lw $a0 -8($fp)"+endl);
-		fw.write("ACCESS_LOOP_"+labelN+" :"+endl);
-		fw.write("beq $a0 "+entry.getNl()+" ACCESS_"+labelN+endl);
+		
+		if(entry.getNl()!=e.getCurrentLevel()) {
+			//READ CURRENT NL
+			fw.write("# GLOBAL VARIABLE"+endl);
+			fw.write("lw $t0 -8($fp)"+endl);
+			fw.write("ACCESS_LOOP_"+labelN+" :"+endl);
+			fw.write("beq $t0 "+entry.getNl()+" ACCESS_"+labelN+endl);
 				
-		//READ OLD_FP TO EXIT FRAME
-		fw.write("lw $al 0($al)"+endl);
+			//READ OLD_FP TO EXIT FRAME
+			fw.write("lw $al 0($al)"+endl);
 				
-		fw.write("addi $a0 -1"+endl);
-		fw.write("b ACCESS_LOOP_"+labelN+endl);
+			fw.write("addi $t0 -1"+endl);
+			fw.write("b ACCESS_LOOP_"+labelN+endl);
+		
+		}
 		
 		//OFFSET + 3 because the first 3 cells of the frame are occupied by OLD_FP OLD_RA NESTING_LEVEL
 		int OFFSET= (-1)*(entry.getOffset()+3)*EnvironmentCodeGen.WORDDIM;
 		
 		fw.write("ACCESS_"+labelN+" :"+endl);
-		
-		value.codeGen(e, fw);
 		
 		fw.write("sw $a0 "+OFFSET+"($al)"+endl);
 	}

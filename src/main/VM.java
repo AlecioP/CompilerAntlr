@@ -92,10 +92,15 @@ public class VM {
 				System.err.print("[{");
 				for(int it = memory.length-1;it>9800;it--) {
 					System.err.print(memory[it]+", ");
-					if((MEMSIZE-1-it)%4==3)
-						System.err.print("}"+(it-1)+"->{");
+					if((MEMSIZE-1-it)%4==3) 
+						System.err.print("}");
+					
 					if(r("$fp")==it-1)
-						System.err.print("\n\n LAST FRAME");
+						System.err.print("\n\nLAST FRAME\n\n");
+					
+					if((MEMSIZE-1-it)%4==3) 
+						System.err.print((it-1)+"->{");
+					
 				}
 				System.err.println("]");
 				/*PRINT MEMORY*/
