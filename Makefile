@@ -62,5 +62,5 @@ run-compiler :
 	java -jar Compiler.jar ../input/input.spp
 
 run-interpreter:
-	cd bin && \
-	java -jar Interpreter.jar ../output/output.simple 2>../output/programERR
+	@cd bin && \
+	java -jar Interpreter.jar ../output/out.simple 2>../output/programERR
