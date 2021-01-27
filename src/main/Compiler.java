@@ -65,7 +65,7 @@ public class Compiler {
 			EnvironmentEffectsFun eef = new EnvironmentEffectsFun();
 			mainBlock.checkEffects(ee, eef);
 			//Code generation
-			String outfile = "out.simple";
+			String outfile = "../output/out.simple";
 			
 			File fd = new File(outfile);
 			
