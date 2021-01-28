@@ -1,0 +1,244 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{authblk}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\newcommand{\comma}{,}
+
+\title{ANTLR + Java : Compilatore per il linguaggio \textbf{Simple Plus} \vspace{30pt}}
+
+\date{Anno Accademico 2020-2021}
+\author[1]{Alessio Portaro (0000000000)}
+\author[1]{Andrea Ercolessi (0000000000)}
+\affil[1]{Laurea Magistrale in Informatica \\
+Alma Mater Studiorum, Campus di Bologna}
+\setcounter{Maxaffil}{0}
+\renewcommand\Affilfont{\itshape\small}
+
+
+\begin{document}
+
+\maketitle
+\vspace{25pt}
+\begin{centering}
+\includegraphics[scale=0.55]{unibo}
+\end{centering}
+\newpage
+\vspace*{\fill}
+\tableofcontents
+\vspace*{\fill}
+\newpage
+\section{Introduzione}
+
+Vogliamo scrivere un compilatore per il linguaggio \textbf{Simple Plus (SP)} definito dalla grammatica scritta nel formalismo del tool \textit{ANTLR}. A partire dal Lexer ed il Parser generati da \textit{ANTLR} vogliamo definire nel linguaggio \textit{JAVA} :
+\begin{itemize}
+    \item Un'implementazione della Classe Visitor, che costruisca un \textbf{\textit{Abstract Syntax Tree(AST)}}
+    \item Un analizzatore semantico che controlli che ogni variabile e funzione sia stata dichiarata, che non esistano dichiarazioni multiple nello stesso scope e la correttezza dei tipi rispetto al loro utilizzo. \\ Inoltre l'analizzatore deve controllare gli \textbf{\textit{Effetti}} che ogni operazione produce sulle variabili e soprattutto che l'ordine con cui questi \textit{Effetti} si susseguono sia coerente rispetto al comportamento atteso.
+    \item Un compilatore che traduca il codice ad alto livello in una serie di istruzioni bytecode precedentemente definite. Questo codice bytecode dovrà poi essere testato scrivendo una \textbf{\textit{Virtual machine}} che definisca il comportamento di ogni istruzione e che poi possa eseguire il file ottenuto dalla compilazione
+\end{itemize}
+\newpage
+\section{Strumenti e design}
+
+\subsection{Tools utilizzati}
+
+Durante la fase di sviluppo sono stati utilizzati i seguenti strumenti : \\
+\begin{itemize}
+    \item \textbf{ANTLR} : Acronimo di \textit{ANother Tool for Language Recognition}, ANTLR è uno strumento per la generazione automatica di Parser per grammatiche LL. La versione utilizzata è la 4.6
+    \begin{center}
+    \includegraphics[scale=0.5]{antlrlogo}
+    \end{center}
+    
+    \item \textbf{Eclipse} : Come ambiente di sviluppo \textit{JAVA} è stato utilizzato l'IDE Eclipse nella sua versione 03-2020
+    \begin{center}
+        \includegraphics[scale=0.30]{eclipse}
+    \end{center}
+\end{itemize}
+ \newpage
+ \subsection{Struttura delle classi}
+ 
+ Il progetto si divide in 4 package principali : 
+ \begin{itemize}
+     \item \textbf{AST} : In questo pacchetto sono contenute tutte classi che descrivono i vari nodi dell'albero di sintassi astratto. Quest'ultimo è a sua volta una sintesi del \textit{Parse tree} generato automaticamente da \textit{ANTLR}. Ognuna di queste classi contiene principalmente 3 metodi :
+     \begin{enumerate}
+         \item \textbf{CheckSemantics} : Questo metodo viene invocato quando il compilatore sta effettuando una discesa dell'albero di sintassi astratto, per effettuare un controllo sulla coerenza dei tipi e sull'esistenza di ogni variabile utilizzata, nello scope corrente
+         \item \textbf{CheckEffects} : Questo metodo viene invocato quando il compilatore sta effettuando una discesa dell'albero di sintassi astratto, per effettuare un controllo sugli effetti che ogni istruzione presente nel programma produce sulle variabili ed inoltre si controlla che la sequenza di queste operazioni sia consistente
+         \item \textbf{CodeGen} : Questo metodo si occupa, dopo che le fasi precedenti hanno verificato la correttezza della semantica dell'operazione, di calcolare una sequenza di istruzioni \textit{bytecode} che corrispondano al costrutto descritto dal nodo corrente
+     \end{enumerate}
+     
+     \item \textbf{Main} : Questo pacchetto contiene le uniche due classi contenenti delle funzioni main : 
+     \begin{enumerate}
+         \item \textbf{Compiler } : Questa classe si occupa di invocare il Parser \textit{ANTLR} sul File in input. Ottenuto un Parse-Tree, costruisce un albero di sintassi astratta. Su questo invoca due discese ricorsive che controllano la correttezza semantica del programma (rispettivamente \textbf{CheckSemantics(AST)} e \textbf{CheckEffects(AST)}). Infine, se le fasi precedenti vanno a buon fine, si occupa di invocare \textbf{CodeGen(AST)} per ottenere in output delle istruzioni bytecode, che va a scrivere su file (\textbf{output/out.simple})
+         \item \textbf{VM} : Questa classe si occupa di definire il comportamento di ogni istruzione bytecode ed inoltre simula una virtual machine. Per tanto deve inizializzare ogni registro virtuale ed aggiornarli dopo ogni istruzione
+     \end{enumerate}
+     \item\textbf{Parser } : Questo pacchetto contiene tutte le classi che vengono generate automaticamente da ANTLR, oltre che a contenere la grammatica stessa(\textbf{SimplePlus.g4 }) :
+     \begin{enumerate}
+         \item \textbf{Parser }: Il parser si occupa di chiamare il lexer il quale restituisce una lista di token che il parser va a strutturare in un Parse Tree
+          \item \textbf{Lexer }: Il lexer si occupa di ricevere in ingresso una lista di carattere e di fornire come output dei Token solo quando  l'input e' lessicalmente  coretto. Il lexer assume il comportamente di un automa a stati finiti con input i vari caratteri del file sorgente
+          
+         \item \textbf{Visitor }: Visitor  e' un intefaccia che l'utente deve implementare. Questa classe viene invocata dal Parser con input il Parse Tree  e si occupa di generare l'albero di sintassi astratta andando ad eliminare qui componenti del albero che non sono necessari all'analisi semantica, ma hanno esaurito il loro scopo dopo l'analisi sintattica gia effetuata dal Parser
+        
+     \end{enumerate}
+     \item\textbf{Util }: In questo paccheto sono presenti le classi di utilita' necessarie alle diverse fasi della compilazione.In particolare abbiamo :  
+      \begin{enumerate}
+            \item \textbf{EnvironmentTypes } : Questa classe definisce l'ambiente utile all'analisi della corettezza dei tipi e dell'esistenza delle variabili. Per permettere questa analisi al suo interno la classe contiene una Linked List di HashMap. Ognuna di  queste Hash Map definisce un ambito di visibilita' delle variabili. Ogni variabile che viene dichiarata e' salvata nell' HashMap che rappresenta lo scope attualmente piu' interno. In particolare viene inserito nel HashMap come chiave una stringa corrispondente al nome della variabile  e come valore un'istanza della classe STEntryTypes. Inoltre ogni qual volta nel codice sorgente viene aperto un nuovo scope, una nuova HashMap viene appessa alla LinkedList ed ogni volta che uno scope viene chiuso l'ultima HashMap appesa viene rimossa dalla LinkedList.
+            \item \textbf{STEntryTypes } : Questa classe e' l'oggetto che usiamo come valore dell'HashMap contenuta nella classe EnvironmentTypes. Ogni istanza dell'oggetto tiene traccia del tipo della varibile corrispondente e del suo nesting level(ovvero il numero degli scope aperti al momento della dichiarazione della variabile)
+            \item \textbf{EnvironmentEffects} : Questa classe definisce l'ambiente utile all'analisi della correttezza della sequenza di operazioni che sono state effettuate sulla variabile. Anche in questo caso la classe contiene una LinkedList di HashMap per tenere traccia delle variabili e degli scope, con la differenza che in questo caso viene associata ad ogni varibile un'istanza della classe STEntryEffects ed ad ogni funzione un'instanza della classe STEntryEffectsFun
+            \item \textbf{STEntryEffects} : Questa classe e' l'oggetto che usiamo come valore dell'HashMap contenuta nella classe EnvironmentEffects. Ogni istanza dell'oggetto tiene traccia del tipo della variabile e del suo stato(che puo' assumere uno dei seguenti valori : \textit{BOTTOM,RW,DELETE,TOP})
+            \item \textbf{STEntryEffectsFun} : Questa classe e' l'oggetto che usiamo come valore dell'HashMap contenuta nella classe EnvironmentEffects in corrispondenza della dichiarazione di funzioni.
+            Ogni istanza dell'oggetto tiene traccia dello stato di ognuno dei parametri della funzione, ed inoltre se il parametro e' un riferimento ad una variabile dichiarata in un altro scope o meno
+            \item \textbf{EnvironmentCodeGen} : Questa classe definisce l'ambiente utile alla generazione del bytecode. Anche in questo caso la classe contiene una LinkedList di HashMap per tenere traccia delle variabili dichiarate e del loro scope di appartenenza. Ogni entry dell'HashMap e' in questo caso associata ad un'istanza della class STEntryCodeGen. Inoltre questo ambiente contiene anche un metodo per il dispatch delle etichette che vengono utilizzate a livello di linguaggio bytecode per effettuare salti condizionati e salti regolari
+            \item \textbf{STEntryCodeGen} : Questa classe e' l'oggetto che usiamo come valore dell'HashMap contenuta nella classe EnvironmentCodeGen. Ogni istanza tiene traccia dell'offset (ovvero la cadinalita' con la quale la variabile è stata dichiarata all'interno dello scope corrispondente)e del nesting level (vedi StEntryTypes)
+      \end{enumerate}
+      
+ \end{itemize}
+ 
+\newpage
+\section{Sviluppo e scelte implementative}
+\subsection{Analisi Lessicale e Sintattica}
+Per quanto rigurda l'analisi  lessicale e sintattica sottolineaiamo che la grammatica non e' stata modificata  rispetto a quanto descritto delle specifiche. Inoltre poichè il parser ed il Lexer vengono generati automaticamente da ANTLR è stato necessario implementare l'intefaccia del Visitor. L'implementazione di questa interfaccia risulta essere molto banale per quanto visto a lezione, pertanto viene tralasciata la descrizione dettagliata. \\
+
+Si riporta di seguito la grammatica del linguaggio per come definita nelle specifiche di progetto : \\
+
+%Style source : https://tex.stackexchange.com/questions/42030/using-listings-package-to-colorize-the-source-code-of-antlr-grammar-file
+
+\lstset{% This applies to ALL lstlisting
+    backgroundcolor=\color{yellow!10},%
+    numbers=left, numberstyle=\tiny, stepnumber=2, numbersep=5pt,%
+    }%
+
+% Applies only when you use it
+\lstdefinestyle{ANTLR-Lang}{
+    basicstyle=\small\ttfamily\color{magenta},%
+    breaklines=true,%                                      allow line breaks
+    moredelim=[s][\color{green!50!black}\ttfamily]{'}{'},% single quotes in green
+    moredelim=*[s][\color{black}\ttfamily]{options}{\}},%  options in black (until trailing })
+    commentstyle={\color{gray}\itshape},%                  gray italics for comments
+    morecomment=[l]{//},%                                  define // comment
+    emph={%
+        STRING%                                            literal strings listed here
+        },emphstyle={\color{blue}\ttfamily},%              and formatted in blue
+    alsoletter={:,|,;},%
+    morekeywords={:,|,;},%                                 define the special characters
+    keywordstyle={\color{black}},%                         and format them in black
+}
+
+\lstinputlisting[style=ANTLR-Lang]{grammar.g4}
+
+\subsection{Analisi dei Tipi e gli Scope}
+
+L'analisi semantica, come detto viene implementata attraverso l'analisi dell'albero di sintassi astratta. La visita dell'albero parte invocando l'analisi del nodo radice. In seguito il nodo radice, cosi' come poi fanno i nodi sottostanti, effettua l'analisi parziale o totale per quanto lo riguarda per poi invocare l'analisi sul nodo figlio (uno o piu' di uno) senza però interessarsi del tipo del nodo. Per invocare il metodo corretto, tutti i nodi implementano un interfaccia comune che descrive il comportamento generico. È poi ovviamente il \textit{Dynamic dispatcher} che si occupa di invocare il metodo della sottoclasse corrispondente al tipo del nodo figlio. \\
+Con questa premessa, possiamo dire che l'implementazione del metodo \textbf{CheckSemantics} per ogni classe è abbastanza coerente con quanto visto a lezione e spigato brevemente nelle sezioni precedenti. In questa fase ci sono solo due punti che si discostano dal metodo visto durante il corso e che quindi rappresentano delle scelte implementative prese dal gruppo :
+\begin{itemize}
+    \item Durante l'analisi del nodo \textbf{SPReturn} che descrive il costrutto \textit{return}, il quale forza l'uscita da una chiamata di funzione e restituisce il risultato della funzione, era neccario controllare che il tipo della variabile restituito corrispondesse al tipo di ritorno riportato al momento della dichiarazione della funzione. Questo si rende necessario poichè all'interno di una funzione, non solo è possibile utilizzare i parametri formali della funzione, ma anche variabili dichiarate all'interno del \textit{Body} della funzione e variabili globali dichiarate prima della dichiarazione della funzione. \\
+    Per ovviare a questo problema si è deciso di inserire nella classe \textit{EnvironmentTypes} una LinkedList chiamata \textbf{Return\_type\_stack (RTS)}. Questa stuttura viene utilizzata per memorizzare il tipo di ritorno ogni volta che si inizia ad analizzare un nodo contenente la dichiarazione di una funzione. Inoltre prima di far partire l'analisi alla radice dell'\textit{AST}, viene aggiunto alla stuttura \textit{RTS} il valore \textit{void} per tenere conto del tipo di ritorno della funzione \textit{main} che si assume essere appunto \textit{void}.
+    \item Durante l'analisi del nodo \textbf{SPIfelse} che descrive il costrutto \textit{if\{...\}else\{...\}} era necessario necessario differenziare il comportamento sui due rami alternativi del costrutto. \\
+    Prendiamo in considerazione per esempio il seguente frammento di codice : \\
+    \begin{lstlisting}[language=c]
+    int x=0;
+    bool verify = someCondition();
+    if(verify){
+        x+=1;
+        delete x;
+    }
+    else{
+        x=0;
+    }
+    \end{lstlisting}
+    In questo caso i due rami del costrutto sono entrambi corretti, ma poiche' nel ramo \textit{then} e' presente il costrutto \textit{delete}, che per permettere il riutilizzo dell'identificativo \textit{x} deve eliminare dall'ambiente tale nome, non è possibile analizzare il ramo \textit{else} utilizzando l'ambiente \textit{EnvironemntType} per come ottenuto alla fine dell'analisi del ramo precedente, bensi' l'analisi dovrebbe avvenire in "parallelo". \\
+    Per questo motivo si e' deciso di implementare un metodo \textit{clone()} per la classe \textit{EnvironmentTypes}. È inutile esplicitare le motivazioni per le quali questo metodo deve effettuare una copia profonda dell'oggetto. Grazie a questo metodo e' possibile effettuare un analisi corretta, andando a creare due copie dell'ambiente prima di analizzare i due rami del costrutto \textit{if\{...\}else\{...\}} (ma ovviamente dopo aver analizzato la guardia ), per poi utilizzare le due copie rispettivamente per il primo e per il secondo ramo. In questo modo è possibile conciliare l'utlizzo di una variabile in un ramo e la sua eliminazione nell'altro.\\
+    NOTA : L'analisi degli effetti non avviene in questa fase per cui dopo l'analisi del costrutto, i due cloni non vengono uniti
+\end{itemize}
+
+\subsection{Analisi degli Effetti}
+
+Anche la fase di Analisi degli Effetti si basa sulla visita dell'albero di sintassi astratta e l'invocazione dinamica del metodo \textbf{CheckEffects}. Proprio come l'analisi dei tipi, anche in questo caso viene utilizzata una classe ambiente per memorizzare lo stato del programma. Questa classe e' \textbf{EnvironmentEffects} di cui abbiamo già parlato nelle sezioni precedenti. Questa classe contiene oltre che i campi gia' descritti, anche dei metodi statici che descrivono gli operatori tra effetti visti a lezione. Grazie a questi metodi si e' proceduto ad implementare i meccanismi visti durante il corso. Le scelte implementative meritevoli di essere menzionate in questo caso sono le seguenti : \\
+\begin{itemize}
+    \item Nell'analisi del nodo \textit{SPDecVar} corrispondente al costrutto per la dichiarazione di una variabile e' necessario tenere in considerazione il fatto che una variabile con un nome precedentemente utilizzato puo' essere dichiarata nuovamente, solo a patto pero' che questa sia stata cancellata tramite il costrutto \textit{delete} e che la variabile non venga ridichiarata con un tipo diverso da quello precedente. Per permettere questi controlli sono state necessarie diverse modifiche. Per prima cosa l'ambiente \textit{EnvironmentEffects} deve tenere conto anche del tipo delle variabili. Inoltre, nel controllare una dichiarazione di variabile a questo punto bisogna controllare che il nome non sia mai stato utilizzato, oppure che a quel nome corrisponda lo stato di variabile \textit{DELETE} oltre che a controllare ovviamente che il tipo della nuova dichiarazione e quello della dichiarazione precedente coincidano
+    \item Come visto a lezione per poter analizzare la correttezza a livello di \textit{Effetti}, quando si parla di funzioni ricorsive, e' necessario calcolare l'effetto della funzione tramite un calcolo del punto fisso. Tutto cio' viene implementato nella classe \textbf{SPDecFun}. Per effettuare questo calcolo e' necessario inizializzare lo stato dei parametri formali al valore \textit{BOTTOM}, cosi' assumere inizialmente la funzione sia 
+    $BOTTOM \rightarrow BOTTOM$ per ogni parametro. Alla fine di ogni iterazione, il corpo della funzione avra' modificato lo stato dei parametri. A questo punto lo stato finale indichera' come il corpo della funzione ha avuto effetto sui parametri, per tanto si aggiorna nella
+    \textit{Simble Table} per le funzioni
+    (\textbf{EnvironmentEffectsFun}) 
+    l'effetto della funzione, che verra' utilizzato alla prossima iterazione per ripetere il calcolo e tenendo in considerazione la chiamata ricorsiva. Quando una delle iterazioni non indica che un comportamento differente da quello fin li calcolato per la funzione, allora si e' raggiunto il punto fisso. \\ 
+    Con questo detto, notiamo che gli ambienti che utilizziamo per fare questo calcolo non hanno nulla a che vedere con l'ambiente esterno alla dichiarazione della funzione. Per non apportare nessuna modifica all'ambiente fin li ottenuto e quindi allo stato di variabili che non hanno a che vedere con la funzione, ma anche per non tenere in considerazione gli effetti calcolati durante ognuna delle iterazioni, e' stato implementato un metodo \textit{clone()} per la classe \textit{EnvironmentEffects} cosicche' sia possibile utilizzare un ambiente opportuno ad ogni nuova iterazione del calcolo del punto fisso.\\
+    NOTA : Questo metodo \textit{clone()} e' stato utilizzato anche per implementare il meccanismo visto a lezione per il costrutto di scelta condizionale \textit{if} (un clone per ogni ramo dell'\textit{if} e poi si uniscono i due cloni tramite l'operatore max). La descrizione qui non e' dettagliata poiche' l'implementazione e' totalmente simile a quella vista durante il corso
+\end{itemize}
+\subsection{Code Generation e Interprete}
+Anche le fase di generazione del bytecode avviene attraverso la visita ricorsiva dell'albero di sintassi astratta. In questo caso il compilatore utilizza la classe \textbf{EnvironmentCodeGen} per memorizzare le informazioni riguardanti le variabili. Prima di trattare i dettagli di implementazione rilevanti e' necessario un preambolo riguardante due aspetti : \\
+\begin{enumerate}
+    \item La struttura del \textbf{\textit{Frame}}:
+    Il \textit{Frame} e' una struttura dati composta da celle consecutive contenenti tutte le informazioni relative ad una chiamata di funzione (prima delle quali l'invocazione della funzione main ). In un dato punto del programma nella cpu (virtuale) e' presente un registro denominato \textbf{\$FP (Frame Pointer)} che contiene il primo indirizzo del \textit{Frame} corrente, ovvero l'indirizzo dal quale iniziano ad essere scritte le informazioni riguardanti la chiamata di funzione corrente. \\
+    A questo punto e' necessario definire una struttura costante per il \textit{Frame} in modo da capire cosa rappresenta ogni cella a partire dall'indirizzo puntato da \textit{\$FP}. Al primo indirizzo (\textit{0(\$FP)}) e' presente il contenuto precedente del registro \textit{\$FP}, ovvero il puntatore al \textit{Frame} del chiamante rispetto alla chiamata di funzione corrente. Al secondo indirizzo (\textit{-Dim\_parola(\$FP)}) e' presente il contenuto precedente del registro \textit{\$RA}. Bisogna dire infatti che ogni istruzione ha un proprio identificativo. Il registro \textit{\$RA} contiene ad ogni istante dell'esecuzione, l'identificativo dell'istruzione dalla quale il chiamante deve riprendere alla fine dell'esecuzione della funzione corrente. Al terzo indirizzo (\textit{-Dim\_parola*2(\$FP)}) e' presente il nesting level del \textit{Frame} corrente, ovvero il livello di ricorsione che ha la chiamata di funzione corrente. Parleremo meglio di questo valore in seguito. Dal quarto indirizzo in poi vengono memorizzate tutti parametri formali e le variabili dichiarate all'interno dello scope della funzione.
+    \item Design dell'\textbf{\textit{Interprete}} e dell'\textbf{\textit{Instruction set}} : 
+    L'interprete del linguaggio e' una macchina a pila, che 
+    lavora su registri nella cpu (virtuale). Le operazioni infatti non prendono gli operandi direttamente dalla memoria centrale, ma hanno bisogno di caricare i dati su registri quali ad esempio \textit{\$a0} e \textit{\$t0}. Oltre a questi registri abbiamo i gia' citati \textit{\$fp} e \textit{\$ra} ed il registro \textit{\$ip (Instruction pointer)} che punta alla prossima istruzione da eseguire e viene quindi letto in fase di \textit{fetch}. Inoltre sono presenti i registri \textit{\$al (Access Link) } e \textit{\$sp (Stack Pointer)}. Questi servono rispettivamente a risalire i \textit{Frame} per andare ad accedere alle variabili non locali ed ad accedere alla memoria centrale in lettura o scrittura (\textit{\$sp} punta infatti alla prossima cella disponibile per la scrittura). \\
+    La \textit{Macchina Virtuale} dispone di 10000 (diecimila) celle che compongono la memoria centrale (virtuale) ed ogni parola occupa 4 di queste celle.  \\
+    Si e' scelto di non inserire tra le istruzioni riconosciute dall'\textit{Interprete} le macro viste a lezione : \textit{Push} e \textit{Pull}. Queste vengono sostituite dalla combinazione delle istruzioni \textbf{ADDI} e \textbf{LW}/\textbf{SW} (rispettivamente).
+    Tra le altre istruzioni troviamo : \textbf{LI} 
+    \textbf{ADD}(Per sommare il valore di due registri in memoria),
+    \textbf{SUBI}(Per sottrarre il valore di un registro ed una costante),
+    \textbf{MOVE}(Per muovere il valore di un registro in un altro),
+    \textbf{JR}(Legge il valore riportato nel registro e salta a quell'istruzione),
+    \textbf{JAL}(Salta ad un etichetta, salvando prima in \$ra il valore del registro \$ip),
+    \textbf{B}(Salto incondizionato ad un etichetta),
+    \textbf{BEQ}(Salto condizionato ad etichetta se i due argomenti sono uguali),
+    \textbf{BGE}(Salto condizionato ad etichetta se il secondo argomento e' maggiore o uguale al primo),
+    \textbf{BLE}(Salto condizionato ad etichetta se il secondo argomento e' minore o uguale al primo),
+    \textbf{PRINT}(Stampa il valore del registro),
+    \textbf{NEG}(Nega il valore del registro),
+    \textbf{MULT}(Moltiplica i valori nei registri),
+    \textbf{DIV}(Dividi i valori nei registri),
+    \textbf{HALT}(Interrompi l'esecuzione del programma senza errori). \\
+    Si sottolinea il fatto che si e' preferito utlizzare un \textit{Instruction Set} al livello piu' basso possibile, senza inserire macro o istruzioni troppo complesse.
+\end{enumerate}
+
+Con questa lunga premessa possiamo andare ad analizzare l'unica scelta implementativa effettuata in questa fase (che e' il motivo per cui, come detto, si e' deciso di aggiungere un branch al repository, dove poter sviluppare questa feature).\\
+In particolare, il linguaggio permette l'utilizzo di variabili globali all'interno di funzioni. Per implementare questa caratteristica a livello di linguaggio macchina si sarebbe potuto aggiungere alla funzione dei parametri formali che sostituissero la variabile globale. Si e' scelto di non percorrere questa via, poiche' questo avrebbe richiesto un ulteriore pre-scansione della funzione per analizzare le variabili globali nominate, per poi modificare il comportamento della funzione stessa affinche' si riferisse al parametro aggiuntivo laddove prima si riferiva alla variabile globale. \\
+Piuttosto che fare quanto detto si e' scelto di implementare un modo per percorrere a ritroso i vari \textit{Frame} per accedere a quello contenente la variabile globale corretta. Per permettere questo accesso dinamico si rende necessario conoscere dinamicamente il \textit{Nesting Level} corrente in ogni momento dell'esecuzione e confrontarlo con il quello relativo alla variabile, noto a tempo di compilazione. Per conoscere questo \textit{Nesting Level}, come descritto nelle sezioni precedenti, questo viene salvato come terzo parametro di ogni \textit{Frame} nel momento dell' inizializzazione di quest'ultimo. Quando il programma deve accedere ad una variabile, a livello di codice macchina non si fa altro che salire di \textit{Frame} (tramite meccanismo di Access Link ed Old Frame Pointer) e decrementare il valore di \textit{Nesting Level} (che verra' salvato in un registro) fin tanto che questo non raggiunge il valore corrispondente a quello della variabile da accedere.
+
+\newpage
+\section{Scaricare ed inizializzare il software}
+
+\subsection{Introduzione}
+
+Durante la fase di sviluppo, è stato utilizzato il software per il versioning del codice sorgente \textbf{GIT} in combinazione dal lato server con il servizio \textbf{GITHUB}. Sul repository ci sono due branch. In particolare sul branch \textbf{runtime-nl} sono state implementate delle feature aggiuntive alla versione presente sul branch \textbf{master}, pertanto la prima è da ritenersi la versione del progetto completa.
+
+\subsection{Download ed installazione}
+
+Per eseguire il codice, per prima cosa e' necessario scaricare il sorgente dalla repository : 
+
+\lstset{
+language=bash,
+basicstyle=\color{black}\ttfamily\footnotesize,,
+backgroundcolor=\color{gray},
+keywordstyle=\color{magenta},
+stringstyle=\color{yellow},
+columns=fullflexible,
+morekeywords={git,make},
+deletekeywords={help},
+frame=shadowbox,
+xleftmargin=0.5cm,
+rulesepcolor=\color{blue}
+}
+\begin{lstlisting}
+git clone "https://github.com/AlecioP/CompilerAntlr"
+\end{lstlisting} 
+\lstset{title={},captionpos={}}
+Entrare nella directory appena creata :
+
+\begin{lstlisting}
+cd CompilerAntlr
+\end{lstlisting}
+Accedere al branch con le feature piu' aggiornate :
+\begin{lstlisting}
+git checkout runtime-nl
+\end{lstlisting}
+Infine per avere informazioni dettagliate sul funzionamento del software :
+\begin{lstlisting}
+make help
+\end{lstlisting}
+\end{document}
+
